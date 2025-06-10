@@ -1,0 +1,160 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 animate-gradient">
+  <div class="max-w-md w-full space-y-8 p-8">
+    <!-- Logo and Title -->
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-20 w-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mb-4 animate-bounce-in">
+        <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+        </svg>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-900 animate-slide-in">إنشاء حساب جديد</h2>
+      <p class="mt-2 text-sm text-gray-600 animate-slide-in">انضم إلى نظام الامتحانات الإلكتروني</p>
+    </div>
+
+    <!-- Register Form -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl p-8 space-y-6 animate-scale-in glass-effect">
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="space-y-6">
+        <!-- Name Field -->
+        <div class="animate-slide-in" style="animation-delay: 0.1s;">
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-2">الاسم الكامل</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            [(ngModel)]="registerData.name"
+            class="input-field"
+            placeholder="أدخل اسمك الكامل"
+            [class.border-red-500]="errorMessage"
+          >
+        </div>
+
+        <!-- Email Field -->
+        <div class="animate-slide-in" style="animation-delay: 0.2s;">
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            [(ngModel)]="registerData.email"
+            class="input-field"
+            placeholder="أدخل بريدك الإلكتروني"
+            [class.border-red-500]="errorMessage"
+          >
+        </div>
+
+        <!-- Role Selection -->
+        <div class="animate-slide-in" style="animation-delay: 0.3s;">
+          <label class="block text-sm font-medium text-gray-700 mb-2">نوع الحساب</label>
+          <div class="grid grid-cols-2 gap-4">
+            <label class="relative">
+              <input
+                type="radio"
+                name="role"
+                value="student"
+                [(ngModel)]="registerData.role"
+                class="sr-only"
+              >
+              <div class="p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:border-blue-500"
+                   [class.border-blue-500]="registerData.role === 'student'"
+                   [class.bg-blue-50]="registerData.role === 'student'"
+                   [class.border-gray-300]="registerData.role !== 'student'">
+                <div class="text-center">
+                  <svg class="mx-auto h-8 w-8 mb-2" [class.text-blue-500]="registerData.role === 'student'" [class.text-gray-400]="registerData.role !== 'student'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  <span class="text-sm font-medium">طالب</span>
+                </div>
+              </div>
+            </label>
+            <label class="relative">
+              <input
+                type="radio"
+                name="role"
+                value="teacher"
+                [(ngModel)]="registerData.role"
+                class="sr-only"
+              >
+              <div class="p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:border-purple-500"
+                   [class.border-purple-500]="registerData.role === 'teacher'"
+                   [class.bg-purple-50]="registerData.role === 'teacher'"
+                   [class.border-gray-300]="registerData.role !== 'teacher'">
+                <div class="text-center">
+                  <svg class="mx-auto h-8 w-8 mb-2" [class.text-purple-500]="registerData.role === 'teacher'" [class.text-gray-400]="registerData.role !== 'teacher'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                  </svg>
+                  <span class="text-sm font-medium">معلم</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="animate-slide-in" style="animation-delay: 0.4s;">
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            [(ngModel)]="registerData.password"
+            class="input-field"
+            placeholder="أدخل كلمة المرور"
+            [class.border-red-500]="errorMessage"
+          >
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="animate-slide-in" style="animation-delay: 0.5s;">
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">تأكيد كلمة المرور</label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            required
+            [(ngModel)]="confirmPassword"
+            class="input-field"
+            placeholder="أعد إدخال كلمة المرور"
+            [class.border-red-500]="errorMessage"
+          >
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="text-red-600 text-sm text-center animate-fade-in">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Register Button -->
+        <div class="animate-slide-in" style="animation-delay: 0.6s;">
+          <button
+            type="submit"
+            [disabled]="isLoading"
+            class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span *ngIf="!isLoading">إنشاء الحساب</span>
+            <span *ngIf="isLoading" class="flex items-center justify-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              جاري إنشاء الحساب...
+            </span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Login Link -->
+      <div class="text-center animate-fade-in" style="animation-delay: 0.7s;">
+        <p class="text-sm text-gray-600">
+          لديك حساب بالفعل؟
+          <a routerLink="/login" class="font-medium text-purple-600 hover:text-purple-500 transition-colors duration-300">
+            تسجيل الدخول
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
