@@ -1,9 +1,8 @@
 export interface User {
   id: string;
-  email: string;
   name: string;
+  email: string;
   role: 'student' | 'teacher';
-  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,6 +29,7 @@ export interface Exam {
   title: string;
   description: string;
   duration: number; // in minutes
+  subject: string;
   questions: Question[];
   teacherId: string;
   isActive: boolean;
@@ -39,26 +39,25 @@ export interface Exam {
 
 export interface Question {
   id: string;
+  question: string;
   text: string;
   type: 'multiple-choice' | 'true-false' | 'essay';
-  options?: string[];
-  correctAnswer?: string | number;
+  options: string[];
+  correctAnswer: string | number;
   points: number;
 }
 
 export interface ExamResult {
   id: string;
-  examId: string;
+  examId: Exam;
   studentId: string;
-  answers: Answer[];
+  answers: {
+    questionId: string;
+    answer: any;
+  }[];
   score: number;
   totalPoints: number;
   completedAt: Date;
-}
-
-export interface Answer {
-  questionId: string;
-  answer: string | number;
 }
 
 export interface DashboardStats {

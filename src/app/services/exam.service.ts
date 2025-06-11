@@ -1,197 +1,128 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Exam, ExamResult, DashboardStats } from '../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExamService {
-  
-  // Mock exams data
-  private mockExams: Exam[] = [
-    {
-      id: '1',
-      title: 'Mathematics Exam - Unit 1',
-      description: 'Comprehensive exam covering Algebra and Geometry',
-      duration: 60,
-      questions: [
-        {
-          id: '1',
-          text: 'What is the result of 2 + 2?',
-          type: 'multiple-choice',
-          options: ['3', '4', '5', '6'],
-          correctAnswer: 1,
-          points: 5
-        },
-        {
-          id: '2',
-          text: 'The square root of 16 is 4',
-          type: 'true-false',
-          correctAnswer: 0,
-          points: 5
-        }
-      ],
-      teacherId: '2',
-      isActive: true,
-      createdAt: new Date('2024-01-15'),
-      updatedAt: new Date('2024-01-15')
-    },
-    {
-      id: '2',
-      title: 'Science Exam - Physics',
-      description: 'Exam on Physics basics and Motion',
-      duration: 45,
-      questions: [
-        {
-          id: '3',
-          text: 'What is the unit of speed?',
-          type: 'multiple-choice',
-          options: ['Meter', 'Second', 'Meter/Second', 'Kilogram'],
-          correctAnswer: 2,
-          points: 10
-        }
-      ],
-      teacherId: '2',
-      isActive: true,
-      createdAt: new Date('2024-01-20'),
-      updatedAt: new Date('2024-01-20')
-    },
-    {
-      id: '3',
-      title: 'English Language Exam',
-      description: 'Exam on Grammar and Vocabulary',
-      duration: 90,
-      questions: [
-        {
-          id: '4',
-          text: 'Choose the correct form: "I ___ to school yesterday"',
-          type: 'multiple-choice',
-          options: ['go', 'went', 'going', 'goes'],
-          correctAnswer: 1,
-          points: 5
-        }
-      ],
-      teacherId: '2',
-      isActive: true,
-      createdAt: new Date('2024-01-25'),
-      updatedAt: new Date('2024-01-25')
-    }
-  ];
+  private apiUrl = 'http://localhost:3000/api/exams';
 
-  // Mock exam results
-  private mockResults: ExamResult[] = [
-    {
-      id: '1',
-      examId: '1',
-      studentId: '1',
-      answers: [
-        { questionId: '1', answer: 1 },
-        { questionId: '2', answer: 0 }
-      ],
-      score: 10,
-      totalPoints: 10,
-      completedAt: new Date('2024-01-16')
-    },
-    {
-      id: '2',
-      examId: '2',
-      studentId: '1',
-      answers: [
-        { questionId: '3', answer: 2 }
-      ],
-      score: 10,
-      totalPoints: 10,
-      completedAt: new Date('2024-01-21')
-    },
-    {
-      id: '3',
-      examId: '3',
-      studentId: '1',
-      answers: [
-        { questionId: '4', answer: 0 }
-      ],
-      score: 0,
-      totalPoints: 5,
-      completedAt: new Date('2024-01-26')
-    }
-  ];
+  constructor(private http: HttpClient) { }
 
-  constructor() { }
+  // Get all exams
+  getAllExams(): Observable<Exam[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/teacher`).pipe(
+      map(exams => exams.map(exam => ({
+        ...exam,
+        id: exam._id,
+        isActive: true,
+        teacherId: exam.teacherId || '1', // Default teacher ID if not provided
+        updatedAt: exam.updatedAt || exam.createdAt,
+        questions: exam.questions ? exam.questions.map((q: any) => ({ ...q, id: q._id })) : []
+      })))
+    );
+  }
 
+  // Get available exams (active exams)
   getAvailableExams(): Observable<Exam[]> {
-    return of(this.mockExams.filter(exam => exam.isActive)).pipe(delay(500));
+    return this.http.get<any[]>(`${this.apiUrl}/student`).pipe(
+      map(exams => exams.map(exam => ({
+        ...exam,
+        id: exam._id,
+        isActive: true,
+        teacherId: exam.teacherId || '1',
+        updatedAt: exam.updatedAt || exam.createdAt
+      })))
+    );
   }
 
-  getExamById(id: string): Observable<Exam | undefined> {
-    const exam = this.mockExams.find(e => e.id === id);
-    return of(exam).pipe(delay(300));
+  // Get exam by ID
+  getExamById(id: string): Observable<Exam> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(exam => ({
+        ...exam,
+        id: exam._id,
+        isActive: true,
+        teacherId: exam.teacherId || '1',
+        updatedAt: exam.updatedAt || exam.createdAt,
+        questions: exam.questions ? exam.questions.map((q: any) => ({ ...q, id: q._id })) : []
+      }))
+    );
   }
 
+  // Create new exam
+  createExam(exam: Partial<Exam>): Observable<Exam> {
+    const examToCreate = {
+      ...exam,
+      isActive: true,
+      teacherId: exam.teacherId || '1',
+      updatedAt: new Date(),
+      subject: exam.subject || 'General' // Ensure subject is included, with a default
+    };
+    return this.http.post<any>(this.apiUrl, examToCreate).pipe(
+      map(newExam => ({
+        ...newExam,
+        id: newExam._id,
+        isActive: true,
+        teacherId: newExam.teacherId || '1',
+        updatedAt: newExam.updatedAt || newExam.createdAt
+      }))
+    );
+  }
+
+  // Update exam
+  updateExam(id: string, exam: Partial<Exam>): Observable<Exam> {
+    const examToUpdate = {
+      ...exam,
+      updatedAt: new Date(),
+      subject: exam.subject // Ensure subject can be updated
+    };
+    return this.http.patch<any>(`${this.apiUrl}/${id}`, examToUpdate).pipe(
+      map(updatedExam => ({
+        ...updatedExam,
+        id: updatedExam._id,
+        isActive: true,
+        teacherId: updatedExam.teacherId || '1',
+        updatedAt: updatedExam.updatedAt || updatedExam.createdAt
+      }))
+    );
+  }
+
+  // Delete exam
+  deleteExam(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // Get student results
   getStudentResults(studentId: string): Observable<ExamResult[]> {
-    const results = this.mockResults.filter(r => r.studentId === studentId);
-    return of(results).pipe(delay(400));
+    return this.http.get<ExamResult[]>(`${this.apiUrl.replace('/exams', '')}/users/profile/exam-results`);
   }
 
+  // Get student dashboard stats
   getStudentDashboardStats(studentId: string): Observable<DashboardStats> {
-    const results = this.mockResults.filter(r => r.studentId === studentId);
-    const totalExams = results.length;
-    const passedExams = results.filter(r => (r.score / r.totalPoints) >= 0.6).length;
-    const failedExams = totalExams - passedExams;
-    const averageScore = totalExams > 0 
-      ? Math.round((results.reduce((sum, r) => sum + (r.score / r.totalPoints), 0) / totalExams) * 100)
-      : 0;
-
-    const stats: DashboardStats = {
-      totalExams,
-      passedExams,
-      failedExams,
-      averageScore
-    };
-
-    return of(stats).pipe(delay(600));
+    return this.http.get<DashboardStats>(`${this.apiUrl.replace('/exams', '')}/users/dashboard/stats`);
   }
 
+  // Submit exam answers
   submitExamAnswers(examId: string, studentId: string, answers: any[]): Observable<ExamResult> {
-    const exam = this.mockExams.find(e => e.id === examId);
-    if (!exam) {
-      throw new Error('Exam not found');
-    }
-
-    let score = 0;
-    const totalPoints = exam.questions.reduce((sum, q) => sum + q.points, 0);
-
-    answers.forEach(answer => {
-      const question = exam.questions.find(q => q.id === answer.questionId);
-      if (question && question.correctAnswer === answer.answer) {
-        score += question.points;
-      }
-    });
-
-    const result: ExamResult = {
-      id: (this.mockResults.length + 1).toString(),
-      examId,
+    const submissionData = {
       studentId,
-      answers,
-      score,
-      totalPoints,
-      completedAt: new Date()
+      answers
     };
-
-    this.mockResults.push(result);
-    return of(result).pipe(delay(800));
+    return this.http.post<any>(`${this.apiUrl}/${examId}/submit`, submissionData).pipe(
+      map(result => ({
+        ...result,
+        id: result._id
+      }))
+    );
   }
 
+  // Get subject scores
   getSubjectScores(studentId: string): Observable<any[]> {
-    const subjectData = [
-      { subject: 'Mathematics', score: 85, color: '#3B82F6' },
-      { subject: 'Science', score: 92, color: '#10B981' },
-      { subject: 'English', score: 78, color: '#F59E0B' },
-      { subject: 'History', score: 88, color: '#8B5CF6' },
-      { subject: 'Geography', score: 82, color: '#EF4444' }
-    ];
-
-    return of(subjectData).pipe(delay(400));
+    return this.http.get<any[]>(`${this.apiUrl.replace('/exams', '')}/users/dashboard/subject-scores`);
   }
 }
 

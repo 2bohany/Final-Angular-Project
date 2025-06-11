@@ -8,6 +8,7 @@ import { Exam, Question } from '../../models/interfaces';
 
 @Component({
   selector: 'app-exam-management',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './exam-management.component.html',
   styleUrl: './exam-management.component.css'
@@ -16,6 +17,7 @@ export class ExamManagementComponent implements OnInit {
   isEditMode = false;
   examId: string | null = null;
   String = String;
+  Number = Number;
   
   exam: Partial<Exam> = {
     title: '',
@@ -95,23 +97,27 @@ export class ExamManagementComponent implements OnInit {
       return;
     }
 
-    const question: Question = {
-      id: this.currentQuestion.id || Date.now().toString(),
+    const question: Partial<Question> = {
       text: this.currentQuestion.text!,
+      question: this.currentQuestion.text!,
       type: this.currentQuestion.type!,
-      options: this.currentQuestion.type === 'multiple-choice' ? this.currentQuestion.options : undefined,
-      correctAnswer: this.currentQuestion.correctAnswer,
+      options: this.currentQuestion.type === 'multiple-choice' ? this.currentQuestion.options! : [],
+      correctAnswer: this.currentQuestion.correctAnswer!,
       points: this.currentQuestion.points!
     };
+
+    if (this.editingQuestionIndex >= 0 && this.currentQuestion.id) {
+      question.id = this.currentQuestion.id;
+    }
 
     if (!this.exam.questions) {
       this.exam.questions = [];
     }
 
     if (this.editingQuestionIndex >= 0) {
-      this.exam.questions[this.editingQuestionIndex] = question;
+      this.exam.questions[this.editingQuestionIndex] = question as Question;
     } else {
-      this.exam.questions.push(question);
+      this.exam.questions.push(question as Question);
     }
 
     this.cancelQuestionForm();
@@ -168,12 +174,33 @@ export class ExamManagementComponent implements OnInit {
 
     this.isLoading = true;
     
-    // In a real app, this would call the service to save the exam
-    setTimeout(() => {
-      this.isLoading = false;
-      alert(this.isEditMode ? 'Exam updated successfully' : 'Exam created successfully');
-      this.router.navigate(['/teacher-dashboard']);
-    }, 1000);
+    if (this.isEditMode && this.examId) {
+      this.examService.updateExam(this.examId, this.exam).subscribe({
+        next: () => {
+          this.isLoading = false;
+          alert('Exam updated successfully');
+          this.router.navigate(['/teacher-dashboard']);
+        },
+        error: (error) => {
+          console.error('Error updating exam:', error);
+          this.isLoading = false;
+          alert('Error updating exam');
+        }
+      });
+    } else {
+      this.examService.createExam(this.exam).subscribe({
+        next: () => {
+          this.isLoading = false;
+          alert('Exam created successfully');
+          this.router.navigate(['/teacher-dashboard']);
+        },
+        error: (error) => {
+          console.error('Error creating exam:', error);
+          this.isLoading = false;
+          alert('Error creating exam');
+        }
+      });
+    }
   }
 
   private validateExam(): boolean {
@@ -201,34 +228,31 @@ export class ExamManagementComponent implements OnInit {
   }
 
   cancel(): void {
-    if (confirm('Are you sure you want to cancel? You will lose all unsaved changes.')) {
-      this.router.navigate(['/teacher-dashboard']);
-    }
+    this.router.navigate(['/teacher-dashboard']);
   }
 
   addOption(): void {
-    if (this.currentQuestion.options && this.currentQuestion.options.length < 6) {
+    if (this.currentQuestion.options) {
       this.currentQuestion.options.push('');
     }
   }
 
   removeOption(index: number): void {
-    if (this.currentQuestion.options && this.currentQuestion.options.length > 2) {
+    if (this.currentQuestion.options) {
       this.currentQuestion.options.splice(index, 1);
-      if (typeof this.currentQuestion.correctAnswer === 'number' && 
-          this.currentQuestion.correctAnswer >= this.currentQuestion.options.length) {
-        this.currentQuestion.correctAnswer = 0;
-      }
     }
   }
 
   getTotalPoints(): number {
-    return this.exam.questions?.reduce((total, q) => total + q.points, 0) || 0;
+    return this.exam.questions?.reduce((sum, q) => sum + q.points, 0) || 0;
   }
 
   getQuestionTypeLabel(type: string): string {
-    const questionType = this.questionTypes.find(qt => qt.value === type);
-    return questionType ? questionType.label : type;
+    return this.questionTypes.find(t => t.value === type)?.label || type;
+  }
+
+  trackByFn(index: number, item: any): number {
+    return index;
   }
 }
 

@@ -43,8 +43,8 @@ export class TeacherDashboardComponent implements OnInit {
     try {
       // Load teacher's exams
       setTimeout(() => {
-        this.examService.getAvailableExams().subscribe(exams => {
-          this.teacherExams = exams.filter(exam => exam.teacherId === this.currentUser!.id);
+        this.examService.getAllExams().subscribe(exams => {
+          this.teacherExams = exams;
           this.calculateStats();
           this.examsLoaded = true;
         });

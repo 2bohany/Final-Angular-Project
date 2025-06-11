@@ -128,11 +128,11 @@
 
                                     <!-- Multiple Choice Options -->
                                     <div *ngIf="question.type === 'multiple-choice' && question.options" class="space-y-1 mb-3">
-                                        <div *ngFor="let option of question.options; let j = index" class="flex items-center text-sm" [class.text-green-600]="j === question.correctAnswer" [class.font-medium]="j === question.correctAnswer">
-                                            <span class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs ml-2" [class.bg-green-100]="j === question.correctAnswer" [class.border-green-500]="j === question.correctAnswer" [class.border-gray-300]="j !== question.correctAnswer">
+                                        <div *ngFor="let option of question.options; let j = index" class="flex items-center text-sm" [class.text-green-600]="j === Number(question.correctAnswer)" [class.font-medium]="j === Number(question.correctAnswer)">
+                                            <span class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs ml-2" [class.bg-green-100]="j === Number(question.correctAnswer)" [class.border-green-500]="j === Number(question.correctAnswer)" [class.border-gray-300]="j !== Number(question.correctAnswer)">
                                                 {{ String.fromCharCode(65 + j) }}
                                             </span> {{ option }}
-                                            <svg *ngIf="j === question.correctAnswer" class="h-4 w-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg *ngIf="j === Number(question.correctAnswer)" class="h-4 w-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                             </svg>
                                         </div>
@@ -141,7 +141,7 @@
                                     <!-- True/False -->
                                     <div *ngIf="question.type === 'true-false'" class="text-sm mb-3">
                                         <span class="text-green-600 font-medium">
-                                            Correct Answer: {{ question.correctAnswer === 0 ? 'True' : 'False' }}
+                                            Correct Answer: {{ Number(question.correctAnswer) === 0 ? 'True' : 'False' }}
                                         </span>
                                     </div>
                                 </div>
@@ -194,7 +194,7 @@
                             <div *ngIf="currentQuestion.type === 'multiple-choice'">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Options</label>
                                 <div class="space-y-2">
-                                    <div *ngFor="let option of currentQuestion.options; let i = index" class="flex items-center space-x-2 space-x-reverse">
+                                    <div *ngFor="let option of currentQuestion.options; let i = index; trackBy: trackByFn" class="flex items-center space-x-2 space-x-reverse">
                                         <input type="radio" [name]="'correct-answer'" [value]="i" [(ngModel)]="currentQuestion.correctAnswer" class="form-radio text-green-600">
                                         <input type="text" [(ngModel)]="currentQuestion.options![i]" class="flex-1 input-field" [placeholder]="'Option ' + String.fromCharCode(65 + i)">
                                         <button *ngIf="currentQuestion.options!.length > 2" (click)="removeOption(i)" class="text-red-600 hover:text-red-700 p-1">

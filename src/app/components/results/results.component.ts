@@ -76,7 +76,7 @@ export class ResultsComponent implements OnInit {
     this.detailsLoaded = false;
     
     // Load exam details
-    this.examService.getExamById(result.examId).subscribe({
+    this.examService.getExamById(result.examId.id).subscribe({
       next: (exam) => {
         this.selectedExam = exam || null;
         setTimeout(() => {
@@ -173,8 +173,8 @@ export class ResultsComponent implements OnInit {
     this.router.navigate(['/student-dashboard']);
   }
 
-  retakeExam(examId: string): void {
-    this.router.navigate(['/exam', examId]);
+  retakeExam(exam: Exam): void {
+    this.router.navigate(['/exam', exam.id]);
   }
 
   getOverallStats(): any {

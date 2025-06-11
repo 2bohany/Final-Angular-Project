@@ -1,0 +1,5 @@
+npm error Missing script: "dev"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /home/diab2/.npm/_logs/2025-06-11T20_09_18_395Z-debug-0.log
