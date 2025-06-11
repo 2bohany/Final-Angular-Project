@@ -50,30 +50,30 @@ export class RegisterComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'حدث خطأ أثناء إنشاء الحساب';
+        this.errorMessage = 'something went wrong';
       }
     });
   }
 
   private validateForm(): boolean {
     if (!this.registerData.name || !this.registerData.email || !this.registerData.password || !this.confirmPassword) {
-      this.errorMessage = 'يرجى ملء جميع الحقول';
+      this.errorMessage = 'Please fill in all fields';
       return false;
     }
 
     if (this.registerData.password !== this.confirmPassword) {
-      this.errorMessage = 'كلمة المرور وتأكيد كلمة المرور غير متطابقتين';
+      this.errorMessage = 'Password and confirm password do not match';
       return false;
     }
 
     if (this.registerData.password.length < 6) {
-      this.errorMessage = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+      this.errorMessage = 'Password must be at least 6 characters long';
       return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.registerData.email)) {
-      this.errorMessage = 'يرجى إدخال بريد إلكتروني صحيح';
+      this.errorMessage = 'Please enter a valid email address';
       return false;
     }
 

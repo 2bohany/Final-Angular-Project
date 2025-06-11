@@ -15,7 +15,7 @@ export class AuthService {
     {
       id: '1',
       email: 'student@example.com',
-      name: 'أحمد محمد',
+      name: 'Ahmed Mohamed',
       role: 'student',
       createdAt: new Date(),
       updatedAt: new Date()
@@ -23,7 +23,7 @@ export class AuthService {
     {
       id: '2',
       email: 'teacher@example.com',
-      name: 'د. فاطمة أحمد',
+      name: 'Dr. Fatima Ahmed',
       role: 'teacher',
       createdAt: new Date(),
       updatedAt: new Date()

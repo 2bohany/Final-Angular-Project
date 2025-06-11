@@ -1,375 +1,319 @@
 <div class="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 animate-gradient">
-  <!-- Header -->
-  <header class="bg-white/80 backdrop-blur-sm shadow-lg border-b border-white/20 animate-slide-in">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-4">
-        <div class="flex items-center space-x-4 space-x-reverse">
-          <button
-            (click)="goBack()"
-            class="h-10 w-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-300"
-          >
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-sm shadow-lg border-b border-white/20 animate-slide-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <button (click)="goBack()" class="h-10 w-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-300">
             <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
           </button>
-          <div>
-            <h1 class="text-xl font-bold text-gray-900">نتائج الامتحانات</h1>
-            <p class="text-sm text-gray-600">عرض تفصيلي لجميع نتائجك</p>
-          </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Exam Results</h1>
+                        <p class="text-sm text-gray-600">View detailed results for all your exams</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600">Overall Average</p>
+                        <p class="text-lg font-bold" [ngClass]="getScoreColor(getOverallStats().averageScore)">
+                            {{ getOverallStats().averageScore }}%
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center space-x-4 space-x-reverse">
-          <div class="text-center">
-            <p class="text-sm text-gray-600">المعدل العام</p>
-            <p class="text-lg font-bold" [ngClass]="getScoreColor(getOverallStats().averageScore)">
-              {{ getOverallStats().averageScore }}%
-            </p>
-          </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="flex items-center justify-center py-20">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600"></div>
         </div>
-      </div>
-    </div>
-  </header>
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="flex items-center justify-center py-20">
-      <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600"></div>
-    </div>
-
-    <!-- Results Content -->
-    <div *ngIf="!isLoading" class="space-y-8">
-      <!-- Overall Statistics -->
-      <div 
-        *ngIf="resultsLoaded"
-        class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-slide-in"
-      >
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-              <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Results Content -->
+        <div *ngIf="!isLoading" class="space-y-8">
+            <!-- Overall Statistics -->
+            <div *ngIf="resultsLoaded" class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-slide-in">
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
               </svg>
-            </div>
-            <div class="mr-4">
-              <p class="text-sm font-medium text-gray-600">إجمالي الامتحانات</p>
-              <p class="text-2xl font-bold text-gray-900">{{ getOverallStats().totalExams }}</p>
-            </div>
-          </div>
-        </div>
+                        </div>
+                        <div class="mr-4">
+                            <p class="text-sm font-medium text-gray-600">Total Exams</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ getOverallStats().totalExams }}</p>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-green-100 text-green-600">
-              <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-            </div>
-            <div class="mr-4">
-              <p class="text-sm font-medium text-gray-600">نجح</p>
-              <p class="text-2xl font-bold text-green-600">{{ getOverallStats().passedExams }}</p>
-            </div>
-          </div>
-        </div>
+                        </div>
+                        <div class="mr-4">
+                            <p class="text-sm font-medium text-gray-600">Passed Exams</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ getOverallStats().passedExams }}</p>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-red-100 text-red-600">
-              <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-            </div>
-            <div class="mr-4">
-              <p class="text-sm font-medium text-gray-600">رسب</p>
-              <p class="text-2xl font-bold text-red-600">{{ getOverallStats().failedExams }}</p>
-            </div>
-          </div>
-        </div>
+                        </div>
+                        <div class="mr-4">
+                            <p class="text-sm font-medium text-gray-600">Average Time</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ getOverallStats().averageTime }} min</p>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
-              <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
               </svg>
+                        </div>
+                        <div class="mr-4">
+                            <p class="text-sm font-medium text-gray-600">Average Score</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ getOverallStats().averageScore }}%</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="mr-4">
-              <p class="text-sm font-medium text-gray-600">المعدل العام</p>
-              <p class="text-2xl font-bold" [ngClass]="getScoreColor(getOverallStats().averageScore)">{{ getOverallStats().averageScore }}%</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Results List -->
-      <div 
-        *ngIf="resultsLoaded"
-        class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in"
-        style="animation-delay: 0.2s;"
-      >
-        <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-          <svg class="h-5 w-5 ml-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Results List -->
+            <div *ngIf="resultsLoaded" class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in" style="animation-delay: 0.2s;">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="h-5 w-5 ml-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg> Results History
+                </h3>
+
+                <div *ngIf="results.length === 0" class="text-center py-8">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
           </svg>
-          تاريخ النتائج
-        </h3>
+                    <p class="mt-2 text-sm text-gray-500">No results available</p>
+                </div>
 
-        <div *ngIf="results.length === 0" class="text-center py-8">
-          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-          </svg>
-          <p class="mt-2 text-sm text-gray-500">لا توجد نتائج متاحة</p>
-        </div>
-
-        <div class="space-y-4">
-          <div 
-            *ngFor="let result of results; let i = index"
-            class="border border-gray-200 rounded-lg p-6 card-hover animate-fade-in"
-            [style.animation-delay]="(0.3 + i * 0.1) + 's'"
-          >
-            <div class="flex items-center justify-between">
-              <div class="flex-1">
-                <div class="flex items-center justify-between mb-2">
-                  <h4 class="text-lg font-medium text-gray-900">امتحان رقم {{ result.examId }}</h4>
-                  <div class="flex items-center space-x-2 space-x-reverse">
-                    <span 
-                      class="px-3 py-1 text-sm font-medium rounded-full"
-                      [ngClass]="getPassStatus(getScorePercentage(result)).bgColor + ' ' + getPassStatus(getScorePercentage(result)).color"
-                    >
+                <div class="space-y-4">
+                    <div *ngFor="let result of results; let i = index" class="border border-gray-200 rounded-lg p-6 card-hover animate-fade-in" [style.animation-delay]="(0.3 + i * 0.1) + 's'">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-medium text-gray-900">Exam {{ result.examId }}</h4>
+                                    <div class="flex items-center space-x-2 space-x-reverse">
+                                        <span class="px-3 py-1 text-sm font-medium rounded-full" [ngClass]="getPassStatus(getScorePercentage(result)).bgColor + ' ' + getPassStatus(getScorePercentage(result)).color">
                       {{ getPassStatus(getScorePercentage(result)).text }}
                     </span>
-                    <span 
-                      class="px-3 py-1 text-sm font-medium rounded-full"
-                      [ngClass]="getScoreBgColor(getScorePercentage(result)) + ' ' + getScoreColor(getScorePercentage(result))"
-                    >
+                                        <span class="px-3 py-1 text-sm font-medium rounded-full" [ngClass]="getScoreBgColor(getScorePercentage(result)) + ' ' + getScoreColor(getScorePercentage(result))">
                       {{ getGrade(getScorePercentage(result)) }}
                     </span>
-                  </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                  <div class="text-center p-3 bg-gray-50 rounded-lg">
-                    <p class="text-xs text-gray-600">النتيجة</p>
-                    <p class="text-lg font-bold" [ngClass]="getScoreColor(getScorePercentage(result))">
-                      {{ result.score }}/{{ result.totalPoints }}
-                    </p>
-                  </div>
-                  
-                  <div class="text-center p-3 bg-gray-50 rounded-lg">
-                    <p class="text-xs text-gray-600">النسبة المئوية</p>
-                    <p class="text-lg font-bold" [ngClass]="getScoreColor(getScorePercentage(result))">
-                      {{ getScorePercentage(result) }}%
-                    </p>
-                  </div>
-                  
-                  <div class="text-center p-3 bg-gray-50 rounded-lg">
-                    <p class="text-xs text-gray-600">التقدير</p>
-                    <p class="text-lg font-bold" [ngClass]="getScoreColor(getScorePercentage(result))">
-                      {{ getGrade(getScorePercentage(result)) }}
-                    </p>
-                  </div>
-                  
-                  <div class="text-center p-3 bg-gray-50 rounded-lg">
-                    <p class="text-xs text-gray-600">تاريخ الإكمال</p>
-                    <p class="text-sm font-medium text-gray-900">
-                      {{ result.completedAt | date:'short' }}
-                    </p>
-                  </div>
-                </div>
+                                    </div>
+                                </div>
 
-                <!-- Progress Bar -->
-                <div class="mb-4">
-                  <div class="flex justify-between items-center mb-1">
-                    <span class="text-xs text-gray-600">التقدم</span>
-                    <span class="text-xs font-medium" [ngClass]="getScoreColor(getScorePercentage(result))">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-600">Score</p>
+                                        <p class="text-lg font-bold" [ngClass]="getScoreColor(getScorePercentage(result))">
+                                            {{ result.score }}/{{ result.totalPoints }}
+                                        </p>
+                                    </div>
+
+                                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-600">Percentage</p>
+                                        <p class="text-lg font-bold" [ngClass]="getScoreColor(getScorePercentage(result))">
+                                            {{ getScorePercentage(result) }}%
+                                        </p>
+                                    </div>
+
+                                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-600">Grade</p>
+                                        <p class="text-lg font-bold" [ngClass]="getScoreColor(getScorePercentage(result))">
+                                            {{ getGrade(getScorePercentage(result)) }}
+                                        </p>
+                                    </div>
+
+                                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-600">Completion Date</p>
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ result.completedAt | date:'short' }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Progress Bar -->
+                                <div class="mb-4">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-xs text-gray-600">Progress</span>
+                                        <span class="text-xs font-medium" [ngClass]="getScoreColor(getScorePercentage(result))">
                       {{ getScorePercentage(result) }}%
                     </span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      class="h-2 rounded-full transition-all duration-1000 ease-out"
-                      [style.width]="getScorePercentage(result) + '%'"
-                      [style.background-color]="getScorePercentage(result) >= 60 ? '#10B981' : '#EF4444'"
-                    ></div>
-                  </div>
-                </div>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="h-2 rounded-full transition-all duration-1000 ease-out" [style.width]="getScorePercentage(result) + '%'" [style.background-color]="getScorePercentage(result) >= 60 ? '#10B981' : '#EF4444'"></div>
+                                    </div>
+                                </div>
 
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-4 space-x-reverse text-sm text-gray-500">
-                    <span class="flex items-center">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4 space-x-reverse text-sm text-gray-500">
+                                        <span class="flex items-center">
                       <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                       </svg>
-                      {{ result.answers.length }} سؤال
+                      {{ result.answers.length }} questions
                     </span>
-                    <span class="flex items-center">
+                                        <span class="flex items-center">
                       <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                       </svg>
                       {{ result.completedAt | date:'medium' }}
                     </span>
-                  </div>
-                  
-                  <div class="flex items-center space-x-2 space-x-reverse">
-                    <button
-                      (click)="viewDetails(result)"
-                      class="btn-secondary text-sm"
-                    >
+                                    </div>
+
+                                    <div class="flex items-center space-x-2 space-x-reverse">
+                                        <button (click)="viewDetails(result)" class="btn-secondary text-sm">
                       <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                       </svg>
-                      عرض التفاصيل
+                      View Details
                     </button>
-                    <button
-                      (click)="retakeExam(result.examId)"
-                      class="btn-primary text-sm"
-                    >
+                                        <button (click)="retakeExam(result.examId)" class="btn-primary text-sm">
                       <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                       </svg>
-                      إعادة الامتحان
+                      Retake Exam
                     </button>
-                  </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </main>
+    </main>
 
-  <!-- Result Details Modal -->
-  <div 
-    *ngIf="showDetails"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in p-4"
-  >
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden animate-scale-in">
-      <!-- Modal Header -->
-      <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6">
-        <div class="flex justify-between items-center">
-          <div>
-            <h3 class="text-xl font-bold">تفاصيل النتيجة</h3>
-            <p class="text-blue-100">{{ selectedExam?.title }}</p>
-          </div>
-          <button
-            (click)="closeDetails()"
-            class="text-white hover:text-gray-200 transition-colors duration-300"
-          >
+    <!-- Result Details Modal -->
+    <div *ngIf="showDetails" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden animate-scale-in">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold">Exam Result Details</h3>
+                        <p class="text-blue-100">{{ selectedExam?.title }}</p>
+                    </div>
+                    <button (click)="closeDetails()" class="text-white hover:text-gray-200 transition-colors duration-300">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
-        </div>
-      </div>
+                </div>
+            </div>
 
-      <!-- Modal Content -->
-      <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-        <div *ngIf="!detailsLoaded" class="flex items-center justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
+            <!-- Modal Content -->
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <div *ngIf="!detailsLoaded" class="flex items-center justify-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                </div>
 
-        <div *ngIf="detailsLoaded && selectedResult && selectedExam" class="space-y-6">
-          <!-- Summary -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <p class="text-sm text-gray-600">النتيجة النهائية</p>
-              <p class="text-2xl font-bold text-blue-600">
-                {{ selectedResult.score }}/{{ selectedResult.totalPoints }}
-              </p>
-            </div>
-            
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-              <p class="text-sm text-gray-600">النسبة المئوية</p>
-              <p class="text-2xl font-bold text-green-600">
-                {{ getScorePercentage(selectedResult) }}%
-              </p>
-            </div>
-            
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-              <p class="text-sm text-gray-600">التقدير</p>
-              <p class="text-2xl font-bold text-purple-600">
-                {{ getGrade(getScorePercentage(selectedResult)) }}
-              </p>
-            </div>
-            
-            <div class="text-center p-4" [ngClass]="getScoreBgColor(getScorePercentage(selectedResult))">
-              <p class="text-sm text-gray-600">الحالة</p>
-              <p class="text-2xl font-bold" [ngClass]="getPassStatus(getScorePercentage(selectedResult)).color">
-                {{ getPassStatus(getScorePercentage(selectedResult)).text }}
-              </p>
-            </div>
-          </div>
+                <div *ngIf="detailsLoaded && selectedResult && selectedExam" class="space-y-6">
+                    <!-- Summary -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-gray-600">Final Score</p>
+                            <p class="text-2xl font-bold text-blue-600">
+                                {{ selectedResult.score }}/{{ selectedResult.totalPoints }}
+                            </p>
+                        </div>
 
-          <!-- Questions Review -->
-          <div class="space-y-4">
-            <h4 class="text-lg font-semibold text-gray-900 mb-4">مراجعة الأسئلة</h4>
-            
-            <div 
-              *ngFor="let question of selectedExam.questions; let i = index"
-              class="border rounded-lg p-4"
-              [class.border-green-200]="isAnswerCorrect(question.id, getUserAnswer(question.id))"
-              [class.bg-green-50]="isAnswerCorrect(question.id, getUserAnswer(question.id))"
-              [class.border-red-200]="!isAnswerCorrect(question.id, getUserAnswer(question.id))"
-              [class.bg-red-50]="!isAnswerCorrect(question.id, getUserAnswer(question.id))"
-            >
-              <div class="flex justify-between items-start mb-3">
-                <h5 class="font-medium text-gray-900">السؤال {{ i + 1 }}</h5>
-                <div class="flex items-center space-x-2 space-x-reverse">
-                  <span class="px-2 py-1 text-xs font-medium rounded-full"
-                        [class.bg-green-100]="isAnswerCorrect(question.id, getUserAnswer(question.id))"
-                        [class.text-green-800]="isAnswerCorrect(question.id, getUserAnswer(question.id))"
-                        [class.bg-red-100]="!isAnswerCorrect(question.id, getUserAnswer(question.id))"
-                        [class.text-red-800]="!isAnswerCorrect(question.id, getUserAnswer(question.id))">
-                    {{ isAnswerCorrect(question.id, getUserAnswer(question.id)) ? 'صحيح' : 'خطأ' }}
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <p class="text-sm text-gray-600">Percentage</p>
+                            <p class="text-2xl font-bold text-green-600">
+                                {{ getScorePercentage(selectedResult) }}%
+                            </p>
+                        </div>
+
+                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                            <p class="text-sm text-gray-600">Grade</p>
+                            <p class="text-2xl font-bold text-purple-600">
+                                {{ getGrade(getScorePercentage(selectedResult)) }}
+                            </p>
+                        </div>
+
+                        <div class="text-center p-4" [ngClass]="getScoreBgColor(getScorePercentage(selectedResult))">
+                            <p class="text-sm text-gray-600">Status</p>
+                            <p class="text-2xl font-bold" [ngClass]="getPassStatus(getScorePercentage(selectedResult)).color">
+                                {{ getPassStatus(getScorePercentage(selectedResult)).text }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Questions Review -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Question Review</h4>
+
+                        <div *ngFor="let question of selectedExam.questions; let i = index" class="border rounded-lg p-4" [class.border-green-200]="isAnswerCorrect(question.id, getUserAnswer(question.id))" [class.bg-green-50]="isAnswerCorrect(question.id, getUserAnswer(question.id))"
+                            [class.border-red-200]="!isAnswerCorrect(question.id, getUserAnswer(question.id))" [class.bg-red-50]="!isAnswerCorrect(question.id, getUserAnswer(question.id))">
+                            <div class="flex justify-between items-start mb-3">
+                                <h5 class="font-medium text-gray-900">Question {{ i + 1 }}</h5>
+                                <div class="flex items-center space-x-2 space-x-reverse">
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full" [class.bg-green-100]="isAnswerCorrect(question.id, getUserAnswer(question.id))" [class.text-green-800]="isAnswerCorrect(question.id, getUserAnswer(question.id))" [class.bg-red-100]="!isAnswerCorrect(question.id, getUserAnswer(question.id))"
+                                        [class.text-red-800]="!isAnswerCorrect(question.id, getUserAnswer(question.id))">
+                                        {{ isAnswerCorrect(question.id, getUserAnswer(question.id)) ? 'Correct' : 'Incorrect' }}
                   </span>
-                  <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                    {{ question.points }} نقطة
+                                    <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                        {{ question.points }} points
                   </span>
-                </div>
-              </div>
-              
-              <p class="text-gray-900 mb-3">{{ question.text }}</p>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p class="font-medium text-gray-700 mb-1">إجابتك:</p>
-                  <p class="text-gray-900" 
-                     [class.text-green-600]="isAnswerCorrect(question.id, getUserAnswer(question.id))"
-                     [class.text-red-600]="!isAnswerCorrect(question.id, getUserAnswer(question.id))">
-                    {{ getAnswerText(question, getUserAnswer(question.id)) }}
-                  </p>
-                </div>
-                
-                <div>
-                  <p class="font-medium text-gray-700 mb-1">الإجابة الصحيحة:</p>
-                  <p class="text-green-600 font-medium">
-                    {{ getCorrectAnswerText(question) }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                                </div>
+                            </div>
 
-      <!-- Modal Footer -->
-      <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3 space-x-reverse">
-        <button
-          (click)="closeDetails()"
-          class="btn-secondary"
-        >
-          إغلاق
+                            <p class="text-gray-900 mb-3">{{ question.text }}</p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="font-medium text-gray-700 mb-1">Your Answer:</p>
+                                    <p class="text-gray-900" [class.text-green-600]="isAnswerCorrect(question.id, getUserAnswer(question.id))" [class.text-red-600]="!isAnswerCorrect(question.id, getUserAnswer(question.id))">
+                                        {{ getAnswerText(question, getUserAnswer(question.id)) }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <p class="font-medium text-gray-700 mb-1">Correct Answer:</p>
+                                    <p class="text-green-600 font-medium">
+                                        {{ getCorrectAnswerText(question) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3 space-x-reverse">
+                <button (click)="closeDetails()" class="btn-secondary">
+                    Close
         </button>
-        <button
-          *ngIf="selectedResult"
-          (click)="retakeExam(selectedResult.examId)"
-          class="btn-primary"
-        >
-          إعادة الامتحان
+                <button *ngIf="selectedResult" (click)="retakeExam(selectedResult.examId)" class="btn-primary">
+                    Retake Exam
         </button>
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-

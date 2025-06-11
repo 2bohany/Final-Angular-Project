@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.loginData.email || !this.loginData.password) {
-      this.errorMessage = 'يرجى ملء جميع الحقول';
+      this.errorMessage = 'Please fill in all fields';
       return;
     }
 
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'بيانات الدخول غير صحيحة';
+        this.errorMessage = 'Invalid login credentials';
       }
     });
   }

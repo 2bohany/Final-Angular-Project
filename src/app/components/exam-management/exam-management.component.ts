@@ -38,9 +38,9 @@ export class ExamManagementComponent implements OnInit {
   isLoading = false;
 
   questionTypes = [
-    { value: 'multiple-choice', label: 'اختيار من متعدد' },
-    { value: 'true-false', label: 'صح أم خطأ' },
-    { value: 'essay', label: 'مقالي' }
+    { value: 'multiple-choice', label: 'Multiple Choice' },
+    { value: 'true-false', label: 'True or False' },
+    { value: 'essay', label: 'Essay' }
   ];
 
   constructor(
@@ -118,7 +118,7 @@ export class ExamManagementComponent implements OnInit {
   }
 
   deleteQuestion(index: number): void {
-    if (confirm('هل أنت متأكد من حذف هذا السؤال؟')) {
+    if (confirm('Are you sure you want to delete this question?')) {
       this.exam.questions!.splice(index, 1);
     }
   }
@@ -141,20 +141,20 @@ export class ExamManagementComponent implements OnInit {
 
   private validateQuestion(): boolean {
     if (!this.currentQuestion.text?.trim()) {
-      alert('يرجى إدخال نص السؤال');
+      alert('Please enter the question text');
       return false;
     }
 
     if (this.currentQuestion.type === 'multiple-choice') {
       const validOptions = this.currentQuestion.options?.filter(opt => opt.trim()) || [];
       if (validOptions.length < 2) {
-        alert('يرجى إدخال خيارين على الأقل للسؤال');
+        alert('Please enter at least two options for the question');
         return false;
       }
     }
 
     if (this.currentQuestion.points! <= 0) {
-      alert('يرجى إدخال نقاط صحيحة للسؤال');
+      alert('Please enter valid points for the question');
       return false;
     }
 
@@ -171,29 +171,29 @@ export class ExamManagementComponent implements OnInit {
     // In a real app, this would call the service to save the exam
     setTimeout(() => {
       this.isLoading = false;
-      alert(this.isEditMode ? 'تم تحديث الامتحان بنجاح' : 'تم إنشاء الامتحان بنجاح');
+      alert(this.isEditMode ? 'Exam updated successfully' : 'Exam created successfully');
       this.router.navigate(['/teacher-dashboard']);
     }, 1000);
   }
 
   private validateExam(): boolean {
     if (!this.exam.title?.trim()) {
-      alert('يرجى إدخال عنوان الامتحان');
+      alert('Please enter the exam title');
       return false;
     }
 
     if (!this.exam.description?.trim()) {
-      alert('يرجى إدخال وصف الامتحان');
+      alert('Please enter the exam description');
       return false;
     }
 
     if (!this.exam.duration || this.exam.duration <= 0) {
-      alert('يرجى إدخال مدة صحيحة للامتحان');
+      alert('Please enter a valid exam duration');
       return false;
     }
 
     if (!this.exam.questions || this.exam.questions.length === 0) {
-      alert('يرجى إضافة سؤال واحد على الأقل');
+      alert('Please add at least one question');
       return false;
     }
 
@@ -201,7 +201,7 @@ export class ExamManagementComponent implements OnInit {
   }
 
   cancel(): void {
-    if (confirm('هل أنت متأكد من إلغاء العملية؟ ستفقد جميع التغييرات غير المحفوظة.')) {
+    if (confirm('Are you sure you want to cancel? You will lose all unsaved changes.')) {
       this.router.navigate(['/teacher-dashboard']);
     }
   }

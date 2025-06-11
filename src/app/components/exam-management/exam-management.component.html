@@ -1,452 +1,319 @@
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 animate-gradient">
-  <!-- Header -->
-  <header class="bg-white/80 backdrop-blur-sm shadow-lg border-b border-white/20 animate-slide-in">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-4">
-        <div class="flex items-center space-x-4 space-x-reverse">
-          <button
-            (click)="cancel()"
-            class="h-10 w-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-300"
-          >
-            <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-          </button>
-          <div>
-            <h1 class="text-xl font-bold text-gray-900">
-              {{ isEditMode ? 'تعديل الامتحان' : 'إنشاء امتحان جديد' }}
-            </h1>
-            <p class="text-sm text-gray-600">قم بإنشاء وإدارة أسئلة الامتحان</p>
-          </div>
-        </div>
-        <div class="flex items-center space-x-3 space-x-reverse">
-          <button
-            (click)="cancel()"
-            class="btn-secondary"
-          >
-            إلغاء
-          </button>
-          <button
-            (click)="saveExam()"
-            [disabled]="isLoading"
-            class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span *ngIf="!isLoading">{{ isEditMode ? 'حفظ التغييرات' : 'إنشاء الامتحان' }}</span>
-            <span *ngIf="isLoading" class="flex items-center">
-              <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              جاري الحفظ...
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Exam Details Form -->
-      <div class="lg:col-span-2 space-y-6">
-        <!-- Basic Information -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-scale-in">
-          <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-            <svg class="h-5 w-5 ml-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            معلومات الامتحان
-          </h3>
-          
-          <div class="space-y-4">
-            <div>
-              <label for="title" class="block text-sm font-medium text-gray-700 mb-2">عنوان الامتحان</label>
-              <input
-                id="title"
-                type="text"
-                [(ngModel)]="exam.title"
-                class="input-field"
-                placeholder="أدخل عنوان الامتحان"
-              >
-            </div>
-            
-            <div>
-              <label for="description" class="block text-sm font-medium text-gray-700 mb-2">وصف الامتحان</label>
-              <textarea
-                id="description"
-                [(ngModel)]="exam.description"
-                rows="3"
-                class="input-field"
-                placeholder="أدخل وصف الامتحان"
-              ></textarea>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">مدة الامتحان (بالدقائق)</label>
-                <input
-                  id="duration"
-                  type="number"
-                  [(ngModel)]="exam.duration"
-                  min="1"
-                  class="input-field"
-                  placeholder="60"
-                >
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">حالة الامتحان</label>
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-sm shadow-lg border-b border-white/20 animate-slide-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-4 space-x-reverse">
-                  <label class="flex items-center">
-                    <input
-                      type="radio"
-                      [(ngModel)]="exam.isActive"
-                      [value]="true"
-                      class="form-radio text-green-600"
-                    >
-                    <span class="mr-2 text-sm text-gray-700">نشط</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input
-                      type="radio"
-                      [(ngModel)]="exam.isActive"
-                      [value]="false"
-                      class="form-radio text-red-600"
-                    >
-                    <span class="mr-2 text-sm text-gray-700">غير نشط</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Questions List -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in" style="animation-delay: 0.2s;">
-          <div class="flex justify-between items-center mb-6">
-            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-              <svg class="h-5 w-5 ml-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              الأسئلة ({{ exam.questions?.length || 0 }})
-            </h3>
-            <button
-              (click)="addQuestion()"
-              class="btn-primary"
-            >
-              <svg class="h-4 w-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-              </svg>
-              إضافة سؤال
-            </button>
-          </div>
-
-          <!-- Questions List -->
-          <div *ngIf="!exam.questions || exam.questions.length === 0" class="text-center py-8">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <p class="mt-2 text-sm text-gray-500">لم تتم إضافة أي أسئلة بعد</p>
-            <button
-              (click)="addQuestion()"
-              class="mt-4 btn-primary"
-            >
-              إضافة أول سؤال
-            </button>
-          </div>
-
-          <div class="space-y-4">
-            <div 
-              *ngFor="let question of exam.questions; let i = index"
-              class="border border-gray-200 rounded-lg p-4 card-hover animate-fade-in"
-              [style.animation-delay]="(0.3 + i * 0.1) + 's'"
-            >
-              <div class="flex justify-between items-start">
-                <div class="flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-500">السؤال {{ i + 1 }}</span>
-                    <div class="flex items-center space-x-2 space-x-reverse">
-                      <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                        {{ getQuestionTypeLabel(question.type) }}
-                      </span>
-                      <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                        {{ question.points }} نقطة
-                      </span>
-                    </div>
-                  </div>
-                  <p class="text-gray-900 mb-3">{{ question.text }}</p>
-                  
-                  <!-- Multiple Choice Options -->
-                  <div *ngIf="question.type === 'multiple-choice' && question.options" class="space-y-1 mb-3">
-                    <div 
-                      *ngFor="let option of question.options; let j = index"
-                      class="flex items-center text-sm"
-                      [class.text-green-600]="j === question.correctAnswer"
-                      [class.font-medium]="j === question.correctAnswer"
-                    >
-                      <span class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs ml-2"
-                            [class.bg-green-100]="j === question.correctAnswer"
-                            [class.border-green-500]="j === question.correctAnswer"
-                            [class.border-gray-300]="j !== question.correctAnswer">
-                        {{ String.fromCharCode(65 + j) }}
-                      </span>
-                      {{ option }}
-                      <svg *ngIf="j === question.correctAnswer" class="h-4 w-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                      </svg>
-                    </div>
-                  </div>
-
-                  <!-- True/False -->
-                  <div *ngIf="question.type === 'true-false'" class="text-sm mb-3">
-                    <span class="text-green-600 font-medium">
-                      الإجابة الصحيحة: {{ question.correctAnswer === 0 ? 'صح' : 'خطأ' }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="flex items-center justify-end space-x-2 space-x-reverse pt-3 border-t border-gray-100">
-                <button
-                  (click)="editQuestion(i)"
-                  class="text-blue-600 hover:text-blue-700 text-sm px-3 py-1 rounded hover:bg-blue-50 transition-colors duration-300"
-                >
-                  تعديل
-                </button>
-                <button
-                  (click)="deleteQuestion(i)"
-                  class="text-red-600 hover:text-red-700 text-sm px-3 py-1 rounded hover:bg-red-50 transition-colors duration-300"
-                >
-                  حذف
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Question Form Modal -->
-        <div 
-          *ngIf="showQuestionForm"
-          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in"
-        >
-          <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto animate-scale-in">
-            <div class="flex justify-between items-center mb-6">
-              <h3 class="text-lg font-semibold text-gray-900">
-                {{ editingQuestionIndex >= 0 ? 'تعديل السؤال' : 'إضافة سؤال جديد' }}
-              </h3>
-              <button
-                (click)="cancelQuestionForm()"
-                class="text-gray-400 hover:text-gray-600 transition-colors duration-300"
-              >
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-            </div>
-
-            <div class="space-y-4">
-              <!-- Question Text -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">نص السؤال</label>
-                <textarea
-                  [(ngModel)]="currentQuestion.text"
-                  rows="3"
-                  class="input-field"
-                  placeholder="أدخل نص السؤال"
-                ></textarea>
-              </div>
-
-              <!-- Question Type -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">نوع السؤال</label>
-                <select
-                  [(ngModel)]="currentQuestion.type"
-                  class="input-field"
-                >
-                  <option *ngFor="let type of questionTypes" [value]="type.value">
-                    {{ type.label }}
-                  </option>
-                </select>
-              </div>
-
-              <!-- Multiple Choice Options -->
-              <div *ngIf="currentQuestion.type === 'multiple-choice'">
-                <label class="block text-sm font-medium text-gray-700 mb-2">الخيارات</label>
-                <div class="space-y-2">
-                  <div 
-                    *ngFor="let option of currentQuestion.options; let i = index"
-                    class="flex items-center space-x-2 space-x-reverse"
-                  >
-                    <input
-                      type="radio"
-                      [name]="'correct-answer'"
-                      [value]="i"
-                      [(ngModel)]="currentQuestion.correctAnswer"
-                      class="form-radio text-green-600"
-                    >
-                    <input
-                      type="text"
-                      [(ngModel)]="currentQuestion.options![i]"
-                      class="flex-1 input-field"
-                      [placeholder]="'الخيار ' + String.fromCharCode(65 + i)"
-                    >
-                    <button
-                      *ngIf="currentQuestion.options!.length > 2"
-                      (click)="removeOption(i)"
-                      class="text-red-600 hover:text-red-700 p-1"
-                    >
-                      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                      </svg>
+                    <button (click)="cancel()" class="h-10 w-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-300">
+                        <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
                     </button>
-                  </div>
-                  <button
-                    *ngIf="currentQuestion.options!.length < 6"
-                    (click)="addOption()"
-                    class="text-blue-600 hover:text-blue-700 text-sm flex items-center"
-                  >
-                    <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    إضافة خيار
-                  </button>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">
+                            {{ isEditMode ? 'Edit Exam' : 'Create New Exam' }}
+                        </h1>
+                        <p class="text-sm text-gray-600">Create and manage exam questions</p>
+                    </div>
                 </div>
-              </div>
-
-              <!-- True/False Options -->
-              <div *ngIf="currentQuestion.type === 'true-false'">
-                <label class="block text-sm font-medium text-gray-700 mb-2">الإجابة الصحيحة</label>
-                <div class="flex items-center space-x-4 space-x-reverse">
-                  <label class="flex items-center">
-                    <input
-                      type="radio"
-                      [(ngModel)]="currentQuestion.correctAnswer"
-                      [value]="0"
-                      class="form-radio text-green-600"
-                    >
-                    <span class="mr-2 text-sm text-gray-700">صح</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input
-                      type="radio"
-                      [(ngModel)]="currentQuestion.correctAnswer"
-                      [value]="1"
-                      class="form-radio text-red-600"
-                    >
-                    <span class="mr-2 text-sm text-gray-700">خطأ</span>
-                  </label>
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <button (click)="cancel()" class="btn-secondary">
+                        Cancel
+                    </button>
+                    <button (click)="saveExam()" [disabled]="isLoading" class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span *ngIf="!isLoading">{{ isEditMode ? 'Save Changes' : 'Create Exam' }}</span>
+                        <span *ngIf="isLoading" class="flex items-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Saving...
+                        </span>
+                    </button>
                 </div>
-              </div>
-
-              <!-- Points -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">النقاط</label>
-                <input
-                  type="number"
-                  [(ngModel)]="currentQuestion.points"
-                  min="1"
-                  class="input-field"
-                  placeholder="5"
-                >
-              </div>
             </div>
-
-            <div class="flex justify-end space-x-3 space-x-reverse mt-6 pt-6 border-t border-gray-200">
-              <button
-                (click)="cancelQuestionForm()"
-                class="btn-secondary"
-              >
-                إلغاء
-              </button>
-              <button
-                (click)="saveQuestion()"
-                class="btn-primary"
-              >
-                {{ editingQuestionIndex >= 0 ? 'حفظ التغييرات' : 'إضافة السؤال' }}
-              </button>
-            </div>
-          </div>
         </div>
-      </div>
+    </header>
 
-      <!-- Sidebar -->
-      <div class="space-y-6">
-        <!-- Exam Summary -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in" style="animation-delay: 0.4s;">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <svg class="h-5 w-5 ml-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-            </svg>
-            ملخص الامتحان
-          </h3>
-          
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">عدد الأسئلة:</span>
-              <span class="font-medium text-gray-900">{{ exam.questions?.length || 0 }}</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">إجمالي النقاط:</span>
-              <span class="font-medium text-gray-900">{{ getTotalPoints() }}</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">مدة الامتحان:</span>
-              <span class="font-medium text-gray-900">{{ exam.duration || 0 }} دقيقة</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">الحالة:</span>
-              <span 
-                class="px-2 py-1 text-xs font-medium rounded-full"
-                [class.bg-green-100]="exam.isActive"
-                [class.text-green-800]="exam.isActive"
-                [class.bg-red-100]="!exam.isActive"
-                [class.text-red-800]="!exam.isActive"
-              >
-                {{ exam.isActive ? 'نشط' : 'غير نشط' }}
-              </span>
-            </div>
-          </div>
-        </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Exam Details Form -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Basic Information -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-scale-in">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                        <svg class="h-5 w-5 ml-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg> Exam Information
+                    </h3>
 
-        <!-- Tips -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in" style="animation-delay: 0.5s;">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <svg class="h-5 w-5 ml-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-            </svg>
-            نصائح
-          </h3>
-          
-          <div class="space-y-3 text-sm text-gray-600">
-            <div class="flex items-start">
-              <svg class="h-4 w-4 text-blue-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span>اكتب أسئلة واضحة ومحددة</span>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Exam Title</label>
+                            <input id="title" type="text" [(ngModel)]="exam.title" class="input-field" placeholder="Enter exam title">
+                        </div>
+
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Exam Description</label>
+                            <textarea id="description" [(ngModel)]="exam.description" rows="3" class="input-field" placeholder="Enter exam description"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Exam Duration (minutes)</label>
+                                <input id="duration" type="number" [(ngModel)]="exam.duration" min="1" class="input-field" placeholder="60">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Exam Status</label>
+                                <div class="flex items-center space-x-4 space-x-reverse">
+                                    <label class="flex items-center">
+                                        <input type="radio" [(ngModel)]="exam.isActive" [value]="true" class="form-radio text-green-600">
+                                        <span class="mr-2 text-sm text-gray-700">Active</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" [(ngModel)]="exam.isActive" [value]="false" class="form-radio text-red-600">
+                                        <span class="mr-2 text-sm text-gray-700">Inactive</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions List -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in" style="animation-delay: 0.2s;">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <svg class="h-5 w-5 ml-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg> Questions ({{ exam.questions?.length || 0 }})
+                        </h3>
+                        <button (click)="addQuestion()" class="btn-primary">
+                            <svg class="h-4 w-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add Question
+                        </button>
+                    </div>
+
+                    <!-- Questions List -->
+                    <div *ngIf="!exam.questions || exam.questions.length === 0" class="text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-500">No questions added yet</p>
+                        <button (click)="addQuestion()" class="mt-4 btn-primary">
+                            Add First Question
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div *ngFor="let question of exam.questions; let i = index" class="border border-gray-200 rounded-lg p-4 card-hover animate-fade-in" [style.animation-delay]="(0.3 + i * 0.1) + 's'">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-500">Question {{ i + 1 }}</span>
+                                        <div class="flex items-center space-x-2 space-x-reverse">
+                                            <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                                {{ getQuestionTypeLabel(question.type) }}
+                                            </span>
+                                            <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                {{ question.points }} points
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-900 mb-3">{{ question.text }}</p>
+
+                                    <!-- Multiple Choice Options -->
+                                    <div *ngIf="question.type === 'multiple-choice' && question.options" class="space-y-1 mb-3">
+                                        <div *ngFor="let option of question.options; let j = index" class="flex items-center text-sm" [class.text-green-600]="j === question.correctAnswer" [class.font-medium]="j === question.correctAnswer">
+                                            <span class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs ml-2" [class.bg-green-100]="j === question.correctAnswer" [class.border-green-500]="j === question.correctAnswer" [class.border-gray-300]="j !== question.correctAnswer">
+                                                {{ String.fromCharCode(65 + j) }}
+                                            </span> {{ option }}
+                                            <svg *ngIf="j === question.correctAnswer" class="h-4 w-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- True/False -->
+                                    <div *ngIf="question.type === 'true-false'" class="text-sm mb-3">
+                                        <span class="text-green-600 font-medium">
+                                            Correct Answer: {{ question.correctAnswer === 0 ? 'True' : 'False' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-end space-x-2 space-x-reverse pt-3 border-t border-gray-100">
+                                <button (click)="editQuestion(i)" class="text-blue-600 hover:text-blue-700 text-sm px-3 py-1 rounded hover:bg-blue-50 transition-colors duration-300">
+                                    Edit
+                                </button>
+                                <button (click)="deleteQuestion(i)" class="text-red-600 hover:text-red-700 text-sm px-3 py-1 rounded hover:bg-red-50 transition-colors duration-300">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Form Modal -->
+                <div *ngIf="showQuestionForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
+                    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto animate-scale-in">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                {{ editingQuestionIndex >= 0 ? 'Edit Question' : 'Add New Question' }}
+                            </h3>
+                            <button (click)="cancelQuestionForm()" class="text-gray-400 hover:text-gray-600 transition-colors duration-300">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Question Text -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Question Text</label>
+                                <textarea [(ngModel)]="currentQuestion.text" rows="3" class="input-field" placeholder="Enter question text"></textarea>
+                            </div>
+
+                            <!-- Question Type -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Question Type</label>
+                                <select [(ngModel)]="currentQuestion.type" class="input-field">
+                                    <option *ngFor="let type of questionTypes" [value]="type.value">
+                                        {{ type.label }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Multiple Choice Options -->
+                            <div *ngIf="currentQuestion.type === 'multiple-choice'">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Options</label>
+                                <div class="space-y-2">
+                                    <div *ngFor="let option of currentQuestion.options; let i = index" class="flex items-center space-x-2 space-x-reverse">
+                                        <input type="radio" [name]="'correct-answer'" [value]="i" [(ngModel)]="currentQuestion.correctAnswer" class="form-radio text-green-600">
+                                        <input type="text" [(ngModel)]="currentQuestion.options![i]" class="flex-1 input-field" [placeholder]="'Option ' + String.fromCharCode(65 + i)">
+                                        <button *ngIf="currentQuestion.options!.length > 2" (click)="removeOption(i)" class="text-red-600 hover:text-red-700 p-1">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <button *ngIf="currentQuestion.options!.length < 6" (click)="addOption()" class="text-blue-600 hover:text-blue-700 text-sm flex items-center">
+                                        <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                        Add Option
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- True/False Options -->
+                            <div *ngIf="currentQuestion.type === 'true-false'">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Correct Answer</label>
+                                <div class="flex items-center space-x-4 space-x-reverse">
+                                    <label class="flex items-center">
+                                        <input type="radio" [(ngModel)]="currentQuestion.correctAnswer" [value]="0" class="form-radio text-green-600">
+                                        <span class="mr-2 text-sm text-gray-700">True</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" [(ngModel)]="currentQuestion.correctAnswer" [value]="1" class="form-radio text-red-600">
+                                        <span class="mr-2 text-sm text-gray-700">False</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Points -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Points</label>
+                                <input type="number" [(ngModel)]="currentQuestion.points" min="1" class="input-field" placeholder="5">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end space-x-3 space-x-reverse mt-6 pt-6 border-t border-gray-200">
+                            <button (click)="cancelQuestionForm()" class="btn-secondary">
+                                Cancel
+                            </button>
+                            <button (click)="saveQuestion()" class="btn-primary">
+                                {{ editingQuestionIndex >= 0 ? 'Save Changes' : 'Add Question' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-start">
-              <svg class="h-4 w-4 text-green-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span>تأكد من صحة الإجابات المحددة</span>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Exam Summary -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in" style="animation-delay: 0.4s;">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="h-5 w-5 ml-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg> Exam Summary
+                    </h3>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Number of Questions:</span>
+                            <span class="font-medium text-gray-900">{{ exam.questions?.length || 0 }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Total Points:</span>
+                            <span class="font-medium text-gray-900">{{ getTotalPoints() }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Exam Duration:</span>
+                            <span class="font-medium text-gray-900">{{ exam.duration || 0 }} minutes</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Status:</span>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full" [class.bg-green-100]="exam.isActive" [class.text-green-800]="exam.isActive" [class.bg-red-100]="!exam.isActive" [class.text-red-800]="!exam.isActive">
+                                {{ exam.isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in" style="animation-delay: 0.5s;">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="h-5 w-5 ml-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg> Tips
+                    </h3>
+
+                    <div class="space-y-3 text-sm text-gray-600">
+                        <div class="flex items-start">
+                            <svg class="h-4 w-4 text-blue-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Write clear and specific questions</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="h-4 w-4 text-green-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Verify the selected correct answers</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="h-4 w-4 text-purple-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Set an appropriate exam duration</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="h-4 w-4 text-orange-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                            </svg>
+                            <span>Distribute points fairly among questions</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-start">
-              <svg class="h-4 w-4 text-purple-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span>حدد مدة مناسبة للامتحان</span>
-            </div>
-            <div class="flex items-start">
-              <svg class="h-4 w-4 text-orange-500 mt-0.5 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-              </svg>
-              <span>وزع النقاط بعدالة على الأسئلة</span>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </main>
+    </main>
 </div>
-

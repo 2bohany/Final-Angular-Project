@@ -1,104 +1,73 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 animate-gradient">
-  <div class="max-w-md w-full space-y-8 p-8">
-    <!-- Logo and Title -->
-    <div class="text-center animate-fade-in">
-      <div class="mx-auto h-20 w-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4 animate-bounce-in">
-        <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="max-w-md w-full space-y-8 p-8">
+        <!-- Logo and Title -->
+        <div class="text-center animate-fade-in">
+            <div class="mx-auto h-20 w-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4 animate-bounce-in">
+                <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
         </svg>
-      </div>
-      <h2 class="text-3xl font-bold text-gray-900 animate-slide-in">نظام الامتحانات الإلكتروني</h2>
-      <p class="mt-2 text-sm text-gray-600 animate-slide-in">قم بتسجيل الدخول للوصول إلى حسابك</p>
-    </div>
-
-    <!-- Login Form -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl p-8 space-y-6 animate-scale-in glass-effect">
-      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
-        <!-- Email Field -->
-        <div class="animate-slide-in" style="animation-delay: 0.2s;">
-          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            [(ngModel)]="loginData.email"
-            class="input-field"
-            placeholder="أدخل بريدك الإلكتروني"
-            [class.border-red-500]="errorMessage"
-          >
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900 animate-slide-in">Electronic Exam System</h2>
+            <p class="mt-2 text-sm text-gray-600 animate-slide-in">Sign in to access your account</p>
         </div>
 
-        <!-- Password Field -->
-        <div class="animate-slide-in" style="animation-delay: 0.3s;">
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            [(ngModel)]="loginData.password"
-            class="input-field"
-            placeholder="أدخل كلمة المرور"
-            [class.border-red-500]="errorMessage"
-          >
-        </div>
+        <!-- Login Form -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl p-8 space-y-6 animate-scale-in glass-effect">
+            <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
+                <!-- Email Field -->
+                <div class="animate-slide-in" style="animation-delay: 0.1s;">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input id="email" name="email" type="email" required [(ngModel)]="loginData.email" class="input-field" placeholder="Enter your email" [class.border-red-500]="errorMessage">
+                </div>
 
-        <!-- Error Message -->
-        <div *ngIf="errorMessage" class="text-red-600 text-sm text-center animate-fade-in">
-          {{ errorMessage }}
-        </div>
+                <!-- Password Field -->
+                <div class="animate-slide-in" style="animation-delay: 0.2s;">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input id="password" name="password" type="password" required [(ngModel)]="loginData.password" class="input-field" placeholder="Enter your password" [class.border-red-500]="errorMessage">
+                </div>
 
-        <!-- Login Button -->
-        <div class="animate-slide-in" style="animation-delay: 0.4s;">
-          <button
-            type="submit"
-            [disabled]="isLoading"
-            class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span *ngIf="!isLoading">تسجيل الدخول</span>
+                <!-- Error Message -->
+                <div *ngIf="errorMessage" class="text-red-600 text-sm text-center animate-fade-in">
+                    {{ errorMessage }}
+                </div>
+
+                <!-- Login Button -->
+                <div class="animate-slide-in" style="animation-delay: 0.4s;">
+                    <button type="submit" [disabled]="isLoading" class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
+            <span *ngIf="!isLoading">Sign In</span>
             <span *ngIf="isLoading" class="flex items-center justify-center">
-              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg class="animate-spin -mr-1 ml-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              جاري تسجيل الدخول...
+              Signing in...
             </span>
           </button>
-        </div>
+                </div>
 
-        <!-- Demo Credentials -->
-        <div class="space-y-2 animate-slide-in" style="animation-delay: 0.5s;">
-          <p class="text-xs text-gray-500 text-center">للتجربة السريعة:</p>
-          <div class="flex space-x-2 space-x-reverse">
-            <button
-              type="button"
-              (click)="fillDemoCredentials('student')"
-              class="flex-1 btn-secondary text-xs py-1"
-            >
-              طالب تجريبي
+                <!-- Demo Credentials -->
+                <div class="space-y-2 animate-slide-in" style="animation-delay: 0.5s;">
+                    <p class="text-xs text-gray-500 text-center">For quick testing:</p>
+                    <div class="flex space-x-2">
+                        <button type="button" (click)="fillDemoCredentials('student')" class="flex-1 btn-primary text-xs py-1">
+                            Demo Student
             </button>
-            <button
-              type="button"
-              (click)="fillDemoCredentials('teacher')"
-              class="flex-1 btn-secondary text-xs py-1"
-            >
-              معلم تجريبي
+                        <button type="button" (click)="fillDemoCredentials('teacher')" class="flex-1 btn-primary text-xs py-1">
+                            Demo Teacher
             </button>
-          </div>
-        </div>
-      </form>
+                    </div>
+                </div>
+            </form>
 
-      <!-- Register Link -->
-      <div class="text-center animate-fade-in" style="animation-delay: 0.6s;">
-        <p class="text-sm text-gray-600">
-          ليس لديك حساب؟
-          <a routerLink="/register" class="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-300">
-            إنشاء حساب جديد
+            <!-- Register Link -->
+            <div class="text-center animate-fade-in" style="animation-delay: 0.6s;">
+                <p class="text-sm text-gray-600">
+                    Don't have an account?
+                    <a routerLink="/register" class="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-300">
+                        Create new account
           </a>
-        </p>
-      </div>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-

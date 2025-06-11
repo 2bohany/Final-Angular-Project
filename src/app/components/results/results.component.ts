@@ -117,18 +117,18 @@ export class ResultsComponent implements OnInit {
   }
 
   getGrade(percentage: number): string {
-    if (percentage >= 90) return 'ممتاز';
-    if (percentage >= 80) return 'جيد جداً';
-    if (percentage >= 70) return 'جيد';
-    if (percentage >= 60) return 'مقبول';
-    return 'راسب';
+    if (percentage >= 90) return 'Excellent';
+    if (percentage >= 80) return 'Very Good';
+    if (percentage >= 70) return 'Good';
+    if (percentage >= 60) return 'Accepted';
+    return 'Fail';
   }
 
   getPassStatus(percentage: number): { text: string; color: string; bgColor: string } {
     if (percentage >= 60) {
-      return { text: 'نجح', color: 'text-green-600', bgColor: 'bg-green-100' };
+      return { text: 'success', color: 'text-green-600', bgColor: 'bg-green-100' };
     } else {
-      return { text: 'راسب', color: 'text-red-600', bgColor: 'bg-red-100' };
+      return { text: 'failed', color: 'text-red-600', bgColor: 'bg-red-100' };
     }
   }
 
@@ -153,20 +153,20 @@ export class ResultsComponent implements OnInit {
 
   getAnswerText(question: any, answerIndex: any): string {
     if (question.type === 'multiple-choice' && question.options) {
-      return question.options[answerIndex] || 'غير محدد';
+      return question.options[answerIndex] || 'Not answered';
     } else if (question.type === 'true-false') {
-      return answerIndex === 0 ? 'صح' : answerIndex === 1 ? 'خطأ' : 'غير محدد';
+      return answerIndex === 0 ? 'True' : answerIndex === 1 ? 'False' : 'Not answered';
     }
-    return 'غير محدد';
+    return 'Not answered';
   }
 
   getCorrectAnswerText(question: any): string {
     if (question.type === 'multiple-choice' && question.options) {
-      return question.options[question.correctAnswer] || 'غير محدد';
+      return question.options[question.correctAnswer] || 'Not answered';
     } else if (question.type === 'true-false') {
-      return question.correctAnswer === 0 ? 'صح' : 'خطأ';
+      return question.correctAnswer === 0 ? 'True' : 'False';
     }
-    return 'غير محدد';
+    return 'Not answered';
   }
 
   goBack(): void {

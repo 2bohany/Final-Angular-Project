@@ -88,7 +88,7 @@ export class TeacherDashboardComponent implements OnInit {
   }
 
   deleteExam(examId: string): void {
-    if (confirm('هل أنت متأكد من حذف هذا الامتحان؟')) {
+    if (confirm('are you sure to delete this exam')) {
       this.teacherExams = this.teacherExams.filter(exam => exam.id !== examId);
       this.calculateStats();
       // In a real app, this would call a service to delete the exam
@@ -105,8 +105,8 @@ export class TeacherDashboardComponent implements OnInit {
     return isActive ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100';
   }
 
-  getExamStatusText(isActive: boolean): string {
-    return isActive ? 'نشط' : 'غير نشط';
+  getExamStatusText(status: boolean): string {
+    return status ? 'Active' : 'Inactive';
   }
 }
 

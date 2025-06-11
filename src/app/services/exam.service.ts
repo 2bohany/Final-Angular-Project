@@ -12,13 +12,13 @@ export class ExamService {
   private mockExams: Exam[] = [
     {
       id: '1',
-      title: 'امتحان الرياضيات - الوحدة الأولى',
-      description: 'امتحان شامل يغطي الجبر والهندسة',
+      title: 'Mathematics Exam - Unit 1',
+      description: 'Comprehensive exam covering Algebra and Geometry',
       duration: 60,
       questions: [
         {
           id: '1',
-          text: 'ما هو ناتج 2 + 2؟',
+          text: 'What is the result of 2 + 2?',
           type: 'multiple-choice',
           options: ['3', '4', '5', '6'],
           correctAnswer: 1,
@@ -26,7 +26,7 @@ export class ExamService {
         },
         {
           id: '2',
-          text: 'الجذر التربيعي لـ 16 هو 4',
+          text: 'The square root of 16 is 4',
           type: 'true-false',
           correctAnswer: 0,
           points: 5
@@ -39,15 +39,15 @@ export class ExamService {
     },
     {
       id: '2',
-      title: 'امتحان العلوم - الفيزياء',
-      description: 'امتحان في أساسيات الفيزياء والحركة',
+      title: 'Science Exam - Physics',
+      description: 'Exam on Physics basics and Motion',
       duration: 45,
       questions: [
         {
           id: '3',
-          text: 'ما هي وحدة قياس السرعة؟',
+          text: 'What is the unit of speed?',
           type: 'multiple-choice',
-          options: ['متر', 'ثانية', 'متر/ثانية', 'كيلوجرام'],
+          options: ['Meter', 'Second', 'Meter/Second', 'Kilogram'],
           correctAnswer: 2,
           points: 10
         }
@@ -59,8 +59,8 @@ export class ExamService {
     },
     {
       id: '3',
-      title: 'امتحان اللغة الإنجليزية',
-      description: 'امتحان في القواعد والمفردات',
+      title: 'English Language Exam',
+      description: 'Exam on Grammar and Vocabulary',
       duration: 90,
       questions: [
         {
@@ -184,11 +184,11 @@ export class ExamService {
 
   getSubjectScores(studentId: string): Observable<any[]> {
     const subjectData = [
-      { subject: 'الرياضيات', score: 85, color: '#3B82F6' },
-      { subject: 'العلوم', score: 92, color: '#10B981' },
-      { subject: 'اللغة الإنجليزية', score: 78, color: '#F59E0B' },
-      { subject: 'التاريخ', score: 88, color: '#8B5CF6' },
-      { subject: 'الجغرافيا', score: 82, color: '#EF4444' }
+      { subject: 'Mathematics', score: 85, color: '#3B82F6' },
+      { subject: 'Science', score: 92, color: '#10B981' },
+      { subject: 'English', score: 78, color: '#F59E0B' },
+      { subject: 'History', score: 88, color: '#8B5CF6' },
+      { subject: 'Geography', score: 82, color: '#EF4444' }
     ];
 
     return of(subjectData).pipe(delay(400));
