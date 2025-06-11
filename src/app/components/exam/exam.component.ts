@@ -121,7 +121,7 @@ export class ExamComponent implements OnInit, OnDestroy {
     if (this.isSubmitting) return;
 
     if (!this.isAllQuestionsAnswered() && this.timeRemaining > 0) {
-      if (!confirm('لم تجب على جميع الأسئلة. هل أنت متأكد من تسليم الامتحان؟')) {
+      if (!confirm('You have not answered all questions. Are you sure you want to submit the exam?')) {
         return;
       }
     }
@@ -156,7 +156,7 @@ export class ExamComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Error submitting exam:', error);
         this.isSubmitting = false;
-        alert('حدث خطأ أثناء تسليم الامتحان. يرجى المحاولة مرة أخرى.');
+        alert('An error occurred while submitting the exam. Please try again.');
       }
     });
   }
@@ -199,7 +199,7 @@ export class ExamComponent implements OnInit, OnDestroy {
   }
 
   exitExam(): void {
-    if (confirm('هل أنت متأكد من الخروج من الامتحان؟ ستفقد جميع إجاباتك.')) {
+    if (confirm('Are you sure you want to exit the exam? You will lose all your answers.')) {
       if (this.timerInterval) {
         clearInterval(this.timerInterval);
       }

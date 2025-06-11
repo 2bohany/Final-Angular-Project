@@ -111,7 +111,7 @@
                     <div class="flex items-center space-x-4 space-x-reverse">
                         <!-- Progress -->
                         <div class="flex items-center space-x-2 space-x-reverse">
-                            <span class="text-sm text-gray-600">التقدم:</span>
+                            <span class="text-sm text-gray-600">Progress:</span>
                             <div class="w-32 bg-gray-200 rounded-full h-2">
                                 <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" [style.width]="getProgressPercentage() + '%'"></div>
                             </div>
@@ -295,8 +295,8 @@
                     <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 sticky top-24">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                             <svg class="h-5 w-5 ml-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-              </svg> خريطة الأسئلة
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg> Question Map
                         </h3>
 
                         <div class="grid grid-cols-5 gap-2 mb-6">
@@ -304,36 +304,36 @@
                                 [class.text-white]="i === currentQuestionIndex && isQuestionAnswered(question.id)" [class.bg-blue-200]="i === currentQuestionIndex && !isQuestionAnswered(question.id)" [class.text-blue-800]="i === currentQuestionIndex && !isQuestionAnswered(question.id)"
                                 [class.bg-green-100]="i !== currentQuestionIndex && isQuestionAnswered(question.id)" [class.text-green-600]="i !== currentQuestionIndex && isQuestionAnswered(question.id)" [class.bg-gray-100]="i !== currentQuestionIndex && !isQuestionAnswered(question.id)"
                                 [class.text-gray-400]="i !== currentQuestionIndex && !isQuestionAnswered(question.id)">
-                {{ i + 1 }}
-              </button>
+                                {{ i + 1 }}
+                            </button>
                         </div>
 
                         <div class="space-y-2 text-xs">
                             <div class="flex items-center">
                                 <div class="w-4 h-4 bg-blue-500 rounded ml-2"></div>
-                                <span class="text-gray-600">السؤال الحالي (مُجاب)</span>
+                                <span class="text-gray-600">Current Question (Answered)</span>
                             </div>
                             <div class="flex items-center">
                                 <div class="w-4 h-4 bg-blue-200 rounded ml-2"></div>
-                                <span class="text-gray-600">السؤال الحالي (غير مُجاب)</span>
+                                <span class="text-gray-600">Current Question (Not Answered)</span>
                             </div>
                             <div class="flex items-center">
                                 <div class="w-4 h-4 bg-green-100 rounded ml-2"></div>
-                                <span class="text-gray-600">مُجاب عليه</span>
+                                <span class="text-gray-600">Answered</span>
                             </div>
                             <div class="flex items-center">
                                 <div class="w-4 h-4 bg-gray-100 rounded ml-2"></div>
-                                <span class="text-gray-600">غير مُجاب</span>
+                                <span class="text-gray-600">Not Answered</span>
                             </div>
                         </div>
 
                         <div class="mt-6 pt-6 border-t border-gray-200">
                             <button (click)="submitExam()" [disabled]="isSubmitting" class="w-full btn-primary bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                <svg class="h-4 w-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                تسليم الامتحان
-              </button>
+                                <svg class="h-4 w-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Submit Exam
+                            </button>
                         </div>
                     </div>
                 </div>
