@@ -37,7 +37,10 @@ router.post('/register', async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                bio: user.bio,
+                profileImage: user.profileImage,
+                backgroundImage: user.backgroundImage
             },
             token
         });
@@ -53,6 +56,7 @@ router.post('/login', async (req, res) => {
 
         // Find user
         const user = await User.findOne({ email });
+        console.log('Backend Auth Login: User retrieved from DB:', user);
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
@@ -75,7 +79,10 @@ router.post('/login', async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                bio: user.bio,
+                profileImage: user.profileImage,
+                backgroundImage: user.backgroundImage
             },
             token
         });
@@ -91,9 +98,46 @@ router.get('/me', auth, async (req, res) => {
             id: req.user._id,
             name: req.user.name,
             email: req.user.email,
-            role: req.user.role
+            role: req.user.role,
+            bio: req.user.bio,
+            profileImage: req.user.profileImage,
+            backgroundImage: req.user.backgroundImage
         }
     });
+});
+
+// Update user profile
+router.put('/profile', auth, async (req, res) => {
+    try {
+        const updates = ['name', 'email', 'bio', 'profileImage', 'backgroundImage'];
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        updates.forEach(update => {
+            if (req.body[update] !== undefined) {
+                user[update] = req.body[update];
+            }
+        });
+
+        await user.save();
+
+        res.json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            bio: user.bio,
+            profileImage: user.profileImage,
+            backgroundImage: user.backgroundImage
+        });
+
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ message: 'Error updating profile' });
+    }
 });
 
 module.exports = router; 

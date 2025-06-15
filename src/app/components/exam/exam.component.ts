@@ -5,11 +5,13 @@ import { Exam, Question } from '../../models/interfaces';
 import { interval, Subscription } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-exam',
   templateUrl: './exam.component.html',
-  styleUrls: ['./exam.component.css']
+  styleUrls: ['./exam.component.css'],
+  imports: [CommonModule]
 })
 export class ExamComponent implements OnInit, OnDestroy {
   exam: Exam | null = null;
@@ -47,9 +49,9 @@ export class ExamComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.examService.getExamById(this.examId).subscribe({
       next: (exam) => {
-        this.exam = exam;
+          this.exam = exam;
         this.timeRemaining = exam.duration * 60; // Convert minutes to seconds
-        this.isLoading = false;
+          this.isLoading = false;
         this.questionLoaded = true;
       },
       error: (error) => {
@@ -79,10 +81,10 @@ export class ExamComponent implements OnInit, OnDestroy {
     this.timerSubscription = interval(1000)
       .pipe(takeWhile(() => this.timeRemaining > 0 && !this.examCompleted))
       .subscribe(() => {
-        this.timeRemaining--;
+      this.timeRemaining--;
         if (this.timeRemaining === 0) {
-          this.submitExam();
-        }
+        this.submitExam();
+      }
       });
   }
 
@@ -154,10 +156,10 @@ export class ExamComponent implements OnInit, OnDestroy {
 
   goToQuestion(index: number): void {
     if (index >= 0 && index < this.exam!.questions.length) {
-      this.currentQuestionIndex = index;
-      this.questionLoaded = false;
-      setTimeout(() => {
-        this.questionLoaded = true;
+    this.currentQuestionIndex = index;
+    this.questionLoaded = false;
+    setTimeout(() => {
+      this.questionLoaded = true;
       }, 300);
     }
   }
@@ -171,9 +173,9 @@ export class ExamComponent implements OnInit, OnDestroy {
       Math.round((examEndTime.getTime() - this.examStartTime.getTime()) / 1000) : 0;
 
     // Convert answers to the format expected by the backend
-    const answersArray = Object.entries(this.answers).map(([questionId, selectedOption]) => ({
+    const answersArray = Object.entries(this.answers).map(([questionId, answer]) => ({
       questionId,
-      selectedOption
+      answer
     }));
 
     console.log('Submitting exam:', {
@@ -206,9 +208,9 @@ export class ExamComponent implements OnInit, OnDestroy {
     if (this.examStarted && !this.examCompleted) {
       if (confirm('Are you sure you want to exit the exam? Your progress will be lost.')) {
         this.router.navigate(['/dashboard']);
-      }
+    }
     } else {
       this.router.navigate(['/dashboard']);
-    }
   }
+}
 }

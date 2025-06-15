@@ -3,6 +3,9 @@ export interface User {
   name: string;
   email: string;
   role: 'student' | 'teacher';
+  bio?: string; // Optional bio field
+  profileImage?: string; // Optional profile image URL
+  backgroundImage?: string; // Optional background image URL
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,6 +25,10 @@ export interface RegisterRequest {
 export interface AuthResponse {
   user: User;
   token: string;
+}
+
+export interface ProfileUpdateResponse {
+  user: User;
 }
 
 export interface Exam {
@@ -50,7 +57,7 @@ export interface Question {
 export interface ExamResult {
   id: string;
   examId: Exam;
-  studentId: string;
+  studentId: User;
   answers: {
     questionId: string;
     answer: any;
@@ -64,6 +71,21 @@ export interface DashboardStats {
   totalExams: number;
   passedExams: number;
   failedExams: number;
+  averageScore: number;
+}
+
+export interface StudentPerformance {
+  studentId: string;
+  studentName: string;
+  email: string;
+  examsTaken: {
+    examId: string;
+    examTitle: string;
+    score: number;
+    totalPoints: number;
+    completedAt: Date;
+    status: 'passed' | 'failed';
+  }[];
   averageScore: number;
 }
 

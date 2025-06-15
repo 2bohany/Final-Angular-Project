@@ -20,6 +20,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['student', 'teacher'],
         required: true
+    },
+    bio: {
+        type: String,
+        default: ''
+    },
+    profileImage: {
+        type: String,
+        default: ''
+    },
+    backgroundImage: {
+        type: String,
+        default: ''
     }
 }, {
     timestamps: true

@@ -3,11 +3,12 @@
     <header class="bg-white/80 backdrop-blur-sm shadow-lg border-b border-white/20 animate-slide-in">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4 space-x-reverse">
-                    <div class="h-12 w-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center animate-bounce-in">
-                        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-            </svg>
+                <div class="flex items-center space-x-4">
+                    <div class="h-12 w-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center animate-bounce-in overflow-hidden cursor-pointer" routerLink="/teacher-profile">
+                        <img *ngIf="currentUser?.profileImage" [src]="getAbsoluteImageUrl(currentUser!.profileImage)" alt="Profile" class="w-full h-full object-cover">
+                        <svg *ngIf="!currentUser?.profileImage" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-gray-900">Welcome, {{ currentUser?.name }}</h1>
@@ -21,11 +22,13 @@
             </svg>
             Create New Exam
           </button>
+          <div>
                     <button (click)="logout()" class="text-red-600 hover:text-red-700 transition-colors duration-300">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
             </svg>
           </button>
+        </div>
                 </div>
             </div>
         </div>
@@ -93,7 +96,7 @@
                         </div>
                         <div class="mr-4">
                             <p class="text-sm font-medium text-gray-600">Average Score</p>
-                            <p class="text-2xl font-bold text-yellow-600 animate-pulse-slow">{{ teacherStats.averageScore }}%</p>
+                            <p class="text-2xl font-bold text-yellow-600 animate-pulse-slow">{{ teacherStats.averageScore | number:'1.0-2' }}%</p>
                         </div>
                     </div>
                 </div>
@@ -116,7 +119,7 @@
             </div>
           </button>
 
-                    <button class="p-4 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 group">
+                    <button routerLink="/view-reports" class="p-4 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 group">
             <div class="text-center">
               <svg class="mx-auto h-8 w-8 text-blue-400 group-hover:text-blue-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
@@ -125,7 +128,7 @@
             </div>
           </button>
 
-                    <button class="p-4 border-2 border-dashed border-green-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all duration-300 group">
+                    <button routerLink="/manage-students" class="p-4 border-2 border-dashed border-green-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all duration-300 group">
             <div class="text-center">
               <svg class="mx-auto h-8 w-8 text-green-400 group-hover:text-green-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
@@ -155,7 +158,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <div *ngFor="let exam of teacherExams; let i = index" class="border border-gray-200 rounded-lg p-6 card-hover animate-fade-in" [style.animation-delay]="(0.7 + i * 0.1) + 's'">
+                    <div *ngFor="let exam of teacherExams; trackBy: trackByExamId; let i = index" class="border border-gray-200 rounded-lg p-6 card-hover animate-fade-in" [style.animation-delay]="(0.7 + i * 0.1) + 's'">
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
                                 <div class="flex items-center justify-between mb-2">

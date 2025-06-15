@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
-import { User, LoginRequest, RegisterRequest, AuthResponse } from '../models/interfaces';
-import { HttpClient } from '@angular/common/http';
+import { User, LoginRequest, RegisterRequest, AuthResponse, ProfileUpdateResponse } from '../models/interfaces';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,12 @@ export class AuthService {
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
-    }
+  }
+
+  setCurrentUser(user: User): void {
+    this.currentUserSubject.next(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
     
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
@@ -66,6 +71,31 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  updateProfile(user: Partial<User>): Observable<ProfileUpdateResponse> {
+    const token = this.getToken();
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.put<ProfileUpdateResponse>(`${this.apiUrl}/users/profile`, user, { headers }).pipe(
+      tap(updatedUser => {
+        console.log('AuthService: updateProfile - received updatedUser:', updatedUser);
+        // Update local storage and BehaviorSubject after successful backend update
+        this.setCurrentUser(updatedUser.user);
+      })
+    );
+  }
+
+  // Get all students
+  getAllStudents(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users/students`);
+  }
+
+  // Get teacher dashboard stats
+  getTeacherDashboardStats(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/users/dashboard/teacher-stats`);
   }
 }
 

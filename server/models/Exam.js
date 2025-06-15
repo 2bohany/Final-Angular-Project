@@ -40,7 +40,7 @@ const examSchema = new mongoose.Schema({
     },
     subject: {
         type: String,
-        required: true
+        required: false
     },
     questions: [questionSchema],
     teacherId: {
@@ -53,7 +53,13 @@ const examSchema = new mongoose.Schema({
         default: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+examSchema.virtual('id').get(function() {
+    return this._id.toHexString();
 });
 
 module.exports = mongoose.model('Exam', examSchema); 

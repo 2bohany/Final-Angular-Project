@@ -18,6 +18,8 @@ export class ResultsComponent implements OnInit {
   selectedExam: Exam | null = null;
   isLoading = true;
   showDetails = false;
+  examIdFromRoute: string | null = null;
+  selectedExamTitle: string = 'Exam Results';
   
   // Animation states
   resultsLoaded = false;
@@ -32,12 +34,16 @@ export class ResultsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    this.loadResults();
     
-    // Check if we're viewing a specific result
     this.route.queryParams.subscribe(params => {
-      if (params['resultId']) {
-        this.showSpecificResult(params['resultId']);
+      this.examIdFromRoute = params['exam'];
+      if (this.examIdFromRoute) {
+        this.loadExamResultsForTeacher(this.examIdFromRoute);
+      } else if (this.currentUser && this.currentUser.role === 'student') {
+        this.loadResults();
+      } else if (this.currentUser && this.currentUser.role === 'teacher'){
+        this.isLoading = false;
+        this.resultsLoaded = true;
       }
     });
   }
@@ -47,6 +53,7 @@ export class ResultsComponent implements OnInit {
 
     this.examService.getStudentResults(this.currentUser.id).subscribe({
       next: (results) => {
+        console.log('Results received in ResultsComponent:', results);
         this.results = results.sort((a, b) => 
           new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
         );
@@ -63,6 +70,26 @@ export class ResultsComponent implements OnInit {
     });
   }
 
+  private loadExamResultsForTeacher(examId: string): void {
+    this.isLoading = true;
+    this.examService.getExamResultsForTeacher(examId).subscribe({
+      next: (results) => {
+        this.results = results;
+        this.examService.getExamById(examId).subscribe(exam => {
+          if (exam) {
+            this.selectedExamTitle = exam.title;
+          }
+          this.isLoading = false;
+          this.resultsLoaded = true;
+        });
+      },
+      error: (error) => {
+        console.error('Error loading exam results for teacher:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+
   private showSpecificResult(resultId: string): void {
     const result = this.results.find(r => r.id === resultId);
     if (result) {
@@ -71,6 +98,12 @@ export class ResultsComponent implements OnInit {
   }
 
   viewDetails(result: ExamResult): void {
+    if (!result.examId) {
+      console.warn('Attempted to view details for a result with a null examId:', result);
+      // Optionally, show a message to the user or prevent opening details
+      return;
+    }
+
     this.selectedResult = result;
     this.showDetails = true;
     this.detailsLoaded = false;
@@ -170,11 +203,11 @@ export class ResultsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/student-dashboard']);
-  }
-
-  retakeExam(exam: Exam): void {
-    this.router.navigate(['/exam', exam.id]);
+    if (this.examIdFromRoute) {
+      this.router.navigate(['/teacher-dashboard']);
+    } else {
+      this.router.navigate(['/student-dashboard']);
+    }
   }
 
   getOverallStats(): any {

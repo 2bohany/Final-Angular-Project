@@ -23,6 +23,7 @@ export class ExamManagementComponent implements OnInit {
     title: '',
     description: '',
     duration: 60,
+    subject: '',
     questions: [],
     isActive: true
   };
@@ -216,6 +217,11 @@ export class ExamManagementComponent implements OnInit {
 
     if (!this.exam.duration || this.exam.duration <= 0) {
       alert('Please enter a valid exam duration');
+      return false;
+    }
+
+    if (!this.exam.subject?.trim()) {
+      alert('Please enter the exam subject');
       return false;
     }
 

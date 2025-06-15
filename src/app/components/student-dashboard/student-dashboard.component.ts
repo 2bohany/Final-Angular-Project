@@ -8,13 +8,14 @@ import { Chart, registerables, ChartConfiguration } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-student-dashboard',
   templateUrl: './student-dashboard.component.html',
   styleUrls: ['./student-dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, NgChartsModule]
+  imports: [CommonModule, FormsModule, NgChartsModule, RouterLink]
 })
 export class StudentDashboardComponent implements OnInit {
   currentUser: User | null = null;
@@ -119,16 +120,31 @@ export class StudentDashboardComponent implements OnInit {
         // Dashboard Stats
         this.dashboardStats = dashboardStats;
         console.log('Dashboard Stats:', this.dashboardStats);
-        this.statsLoaded = true;
+          this.statsLoaded = true;
 
         // Available Exams
         this.availableExams = availableExams;
         console.log('Available Exams:', this.availableExams);
-        this.examsLoaded = true;
+          this.examsLoaded = true;
 
         // Completed Exams
-        this.completedExams = completedExams;
-        console.log('Completed Exams on Student Dashboard:', this.completedExams);
+        // Filter out results where examId is null (e.g., if the exam was deleted)
+        this.completedExams = completedExams.filter(result => result.examId);
+        console.log('Completed Exams on Student Dashboard (filtered):', this.completedExams);
+
+        // Recalculate Passed, Failed, and Total Exams based on filtered completed exams
+        const passedCount = this.completedExams.filter(result => this.getScorePercentage(result) >= 60).length;
+        const failedCount = this.completedExams.filter(result => this.getScorePercentage(result) < 60).length;
+        
+        if (this.dashboardStats) {
+          this.dashboardStats.passedExams = passedCount;
+          this.dashboardStats.failedExams = failedCount;
+          this.dashboardStats.totalExams = this.completedExams.length;
+          // Recalculate average score based on filtered exams if necessary
+          const totalScorePoints = this.completedExams.reduce((sum, result) => sum + result.score, 0);
+          const totalPossiblePoints = this.completedExams.reduce((sum, result) => sum + result.totalPoints, 0);
+          this.dashboardStats.averageScore = totalPossiblePoints > 0 ? (totalScorePoints / totalPossiblePoints) * 100 : 0;
+        }
 
         // Subject Scores
         this.subjectScores = subjectScores;
@@ -136,17 +152,22 @@ export class StudentDashboardComponent implements OnInit {
 
         // Update charts and set loaded flag
         this.updateChartData();
-        this.chartsLoaded = true;
-        this.isLoading = false;
+          this.chartsLoaded = true;
+          this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading dashboard data:', error);
-        this.isLoading = false;
-      }
+      console.error('Error loading dashboard data:', error);
+      this.isLoading = false;
+    }
     });
   }
 
   startExam(examId: string): void {
+    const hasTakenExam = this.completedExams.some(result => result.examId.id === examId);
+    if (hasTakenExam) {
+      alert('You have already completed this exam. You can only take an exam once.');
+      return;
+    }
     this.router.navigate(['/exam', examId]);
   }
 
@@ -156,13 +177,21 @@ export class StudentDashboardComponent implements OnInit {
       this.router.navigate(['/results', examId, resultId]);
     } else {
       // Otherwise, navigate to a general results overview (if applicable)
-      this.router.navigate(['/results']);
+    this.router.navigate(['/results']);
     }
   }
 
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  // Helper to get absolute image URL
+  getAbsoluteImageUrl(relativePath: string | undefined): string {
+    if (relativePath) {
+      return `http://localhost:3000${relativePath}`;
+    }
+    return ''; // Or a placeholder image path
   }
 
   getScoreColor(score: number): string {

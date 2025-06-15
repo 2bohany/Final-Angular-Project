@@ -7,9 +7,12 @@ const { auth, checkRole } = require('../middleware/auth');
 // Get all exams (for teachers)
 router.get('/teacher', auth, checkRole(['teacher']), async (req, res) => {
     try {
+        console.log('Fetching exams for teacherId:', req.user._id);
+        console.log('Full req.user object:', req.user);
         const exams = await Exam.find({ teacherId: req.user._id });
         res.json(exams);
     } catch (error) {
+        console.error('Error fetching teacher exams:', error);
         res.status(500).json({ message: 'Error fetching exams' });
     }
 });
@@ -69,7 +72,7 @@ router.post('/', auth, checkRole(['teacher']), async (req, res) => {
 });
 
 // Update exam
-router.put('/:id', auth, checkRole(['teacher']), async (req, res) => {
+router.patch('/:id', auth, checkRole(['teacher']), async (req, res) => {
     try {
         const exam = await Exam.findById(req.params.id);
         if (!exam) {
@@ -80,19 +83,36 @@ router.put('/:id', auth, checkRole(['teacher']), async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        // Ensure subject can be updated
-        const allowedUpdates = ['title', 'description', 'duration', 'questions', 'isActive', 'subject'];
+        // Log the request body and identified updates
+        console.log('Exam PATCH request body:', req.body);
+        console.log('Exam ID from params:', req.params.id);
+        const allowedUpdates = ['title', 'description', 'duration', 'questions', 'isActive', 'subject', 'updatedAt'];
         const updates = Object.keys(req.body);
-        const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+        console.log('Identified updates in request:', updates);
 
-        if (!isValidOperation) {
-            return res.status(400).json({ message: 'Invalid updates' });
+        // Construct an object with only the allowed updates
+        const updatesToApply = {};
+        updates.forEach(update => {
+            updatesToApply[update] = req.body[update];
+        });
+
+        const updatedExam = await Exam.findByIdAndUpdate(
+            req.params.id,
+            { $set: updatesToApply }, // Use the filtered updates
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedExam) {
+            return res.status(404).json({ message: 'Exam not found' });
         }
 
-        updates.forEach(update => exam[update] = req.body[update]);
-        await exam.save();
-        res.json(exam);
+        console.log('Backend sending updated exam:', updatedExam);
+        res.json(updatedExam);
     } catch (error) {
+        console.error('Error updating exam:', error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: error.message });
+        }
         res.status(500).json({ message: 'Error updating exam' });
     }
 });
@@ -109,9 +129,10 @@ router.delete('/:id', auth, checkRole(['teacher']), async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        await exam.remove();
-        res.json({ message: 'Exam deleted' });
+        await Exam.deleteOne({ _id: req.params.id });
+        res.json({ message: 'Exam deleted successfully' });
     } catch (error) {
+        console.error('Error deleting exam:', error);
         res.status(500).json({ message: 'Error deleting exam' });
     }
 });

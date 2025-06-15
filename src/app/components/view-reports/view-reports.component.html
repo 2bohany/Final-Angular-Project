@@ -1,0 +1,58 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 animate-gradient p-8">
+    <div class="max-w-7xl mx-auto bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 animate-slide-in">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Student Performance Reports</h2>
+        <button (click)="returnToManageStudents()" class="btn-secondary mb-4">
+            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Return to Manage Students
+        </button>
+
+        <div *ngIf="isLoading" class="flex items-center justify-center py-10">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            <p class="ml-4 text-gray-600">Loading reports...</p>
+        </div>
+
+        <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ errorMessage }}</span>
+        </div>
+
+        <div *ngIf="!isLoading && studentPerformances.length === 0" class="text-center py-10">
+            <p class="text-gray-600">No student performance reports found.</p>
+        </div>
+
+        <div *ngIf="!isLoading && studentPerformances.length > 0" class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam Title</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed At</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <ng-container *ngFor="let performance of studentPerformances">
+                        <tr *ngFor="let exam of performance.examsTaken">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ performance.studentName }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ exam.examTitle }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ exam.score }} / {{ exam.totalPoints }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <span [ngClass]="{
+                                    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full': true,
+                                    'bg-green-100 text-green-800': exam.status === 'passed',
+                                    'bg-red-100 text-red-800': exam.status === 'failed'
+                                }">
+                                    {{ exam.status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ exam.completedAt | date:'short' }}</td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

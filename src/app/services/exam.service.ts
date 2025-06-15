@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Exam, ExamResult, DashboardStats } from '../models/interfaces';
+import { Exam, ExamResult, DashboardStats, StudentPerformance } from '../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class ExamService {
       map(exams => exams.map(exam => ({
         ...exam,
         id: exam._id,
-        isActive: true,
+        isActive: exam.isActive,
         teacherId: exam.teacherId || '1', // Default teacher ID if not provided
         updatedAt: exam.updatedAt || exam.createdAt,
         questions: exam.questions ? exam.questions.map((q: any) => ({ ...q, id: q._id })) : []
@@ -32,7 +32,7 @@ export class ExamService {
       map(exams => exams.map(exam => ({
         ...exam,
         id: exam._id,
-        isActive: true,
+        isActive: exam.isActive,
         teacherId: exam.teacherId || '1',
         updatedAt: exam.updatedAt || exam.createdAt
       })))
@@ -45,7 +45,7 @@ export class ExamService {
       map(exam => ({
         ...exam,
         id: exam._id,
-        isActive: true,
+        isActive: exam.isActive,
         teacherId: exam.teacherId || '1',
         updatedAt: exam.updatedAt || exam.createdAt,
         questions: exam.questions ? exam.questions.map((q: any) => ({ ...q, id: q._id })) : []
@@ -84,7 +84,7 @@ export class ExamService {
       map(updatedExam => ({
         ...updatedExam,
         id: updatedExam._id,
-        isActive: true,
+        isActive: updatedExam.isActive, // Use the isActive from the backend response
         teacherId: updatedExam.teacherId || '1',
         updatedAt: updatedExam.updatedAt || updatedExam.createdAt
       }))
@@ -123,6 +123,31 @@ export class ExamService {
   // Get subject scores
   getSubjectScores(studentId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl.replace('/exams', '')}/users/dashboard/subject-scores`);
+  }
+
+  // Get all student exam performances for reporting
+  getAllStudentPerformances(): Observable<StudentPerformance[]> {
+    return this.http.get<StudentPerformance[]>(`${this.apiUrl.replace('/exams', '')}/users/all-exam-results`);
+  }
+
+  // Get all results for a specific exam (for teachers)
+  getExamResultsForTeacher(examId: string): Observable<ExamResult[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${examId}/results`).pipe(
+      map(results => results.map(result => ({
+        ...result,
+        id: result._id,
+        examId: result.examId, // This should be the populated exam object if needed, but for now just the ID
+        studentId: {
+          id: result.studentId._id,
+          name: result.studentId.name,
+          email: result.studentId.email,
+          role: result.studentId.role,
+          createdAt: result.studentId.createdAt,
+          updatedAt: result.studentId.updatedAt,
+        }, // Map populated student details
+        completedAt: result.completedAt || result.createdAt
+      })))
+    );
   }
 }
 

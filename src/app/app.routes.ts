@@ -6,7 +6,11 @@ import { TeacherDashboardComponent } from './components/teacher-dashboard/teache
 import { ExamComponent } from './components/exam/exam.component';
 import { ResultsComponent } from './components/results/results.component';
 import { ExamManagementComponent } from './components/exam-management/exam-management.component';
+import { ManageStudentsComponent } from './components/manage-students/manage-students.component';
+import { ViewReportsComponent } from './components/view-reports/view-reports.component';
 import { AuthGuard, StudentGuard, TeacherGuard } from './guards/auth.guard';
+import { TeacherProfileComponent } from './components/teacher-profile/teacher-profile.component';
+import { StudentProfileComponent } from './components/student-profile/student-profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -36,6 +40,26 @@ export const routes: Routes = [
     path: 'exam-management', 
     component: ExamManagementComponent,
     canActivate: [TeacherGuard]
+  },
+  {
+    path: 'manage-students',
+    component: ManageStudentsComponent,
+    canActivate: [TeacherGuard]
+  },
+  {
+    path: 'view-reports',
+    component: ViewReportsComponent,
+    canActivate: [TeacherGuard]
+  },
+  {
+    path: 'teacher-profile',
+    component: TeacherProfileComponent,
+    canActivate: [TeacherGuard]
+  },
+  {
+    path: 'student-profile',
+    component: StudentProfileComponent,
+    canActivate: [StudentGuard]
   },
   { path: '**', redirectTo: '/login' }
 ];
